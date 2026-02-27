@@ -3058,6 +3058,12 @@
 		(uuid "02a57fba-d8dd-419f-94d0-a2713e58eceb")
 	)
 	(junction
+		(at 139.7 36.83)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "39a81061-24cc-4b0a-992d-0b623ad7b5c1")
+	)
+	(junction
 		(at 139.7 39.37)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3401,7 +3407,7 @@
 	)
 	(wire
 		(pts
-			(xy 142.24 36.83) (xy 138.43 36.83)
+			(xy 138.43 36.83) (xy 139.7 36.83)
 		)
 		(stroke
 			(width 0)
@@ -3431,6 +3437,86 @@
 	)
 	(wire
 		(pts
+			(xy 139.7 36.83) (xy 142.24 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "79574e59-13f4-4c36-ad7f-a44b92db689d")
+	)
+	(wire
+		(pts
+			(xy 152.4 41.91) (xy 146.05 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "884d464c-f850-44ad-a2dd-51099fad1446")
+	)
+	(wire
+		(pts
+			(xy 146.05 41.91) (xy 146.05 39.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9b665298-76e3-4f0e-aae3-877c1a7c66b4")
+	)
+	(wire
+		(pts
+			(xy 146.05 39.37) (xy 142.24 39.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6c312597-0b9a-4851-97ff-6518ec432665")
+	)
+	(wire
+		(pts
+			(xy 152.4 34.29) (xy 146.05 34.29)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a40bfe0b-5b2c-4e07-b259-bed18915dc40")
+	)
+	(wire
+		(pts
+			(xy 146.05 34.29) (xy 146.05 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dd422e90-2cda-4511-bc56-afb0cc9d61a4")
+	)
+	(wire
+		(pts
+			(xy 146.05 36.83) (xy 142.24 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c3d9f07f-f80f-4deb-aec4-cc1624f21c9f")
+	)
+	(wire
+		(pts
+			(xy 118.11 58.42) (xy 125.73 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7cd4dd2c-0c45-4734-9242-19f519c32240")
+	)
+	(wire
+		(pts
 			(xy 118.11 60.96) (xy 125.73 60.96)
 		)
 		(stroke
@@ -3448,16 +3534,6 @@
 			(type default)
 		)
 		(uuid "8f0992d5-49c0-4e8d-ad1a-4ed39aa1822d")
-	)
-	(wire
-		(pts
-			(xy 118.11 58.42) (xy 125.73 58.42)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7cd4dd2c-0c45-4734-9242-19f519c32240")
 	)
 	(wire
 		(pts
@@ -4559,6 +4635,71 @@
 			(project "LedScreen"
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
 					(reference "#PWR04")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 139.7 36.83 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "16e62e96-beb4-4c3f-b917-55b69eb1d6fb")
+		(property "Reference" "#FLG02"
+			(at 139.7 34.925 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 139.7 32.004 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 139.7 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 139.7 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 139.7 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c2aaf1b1-5b19-43b5-886e-f6d108631170")
+		)
+		(instances
+			(project "LedScreen"
+				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
+					(reference "#FLG02")
 					(unit 1)
 				)
 			)
@@ -5946,7 +6087,6 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "5c975a8c-544f-4c0a-a975-482da0e0bc81")
 		(property "Reference" "#FLG01"
 			(at 139.7 41.275 0)
@@ -5958,7 +6098,7 @@
 			)
 		)
 		(property "Value" "PWR_FLAG"
-			(at 139.7 44.45 0)
+			(at 139.7 44.196 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5999,72 +6139,6 @@
 			(project ""
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
 					(reference "#FLG01")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:PWR_FLAG")
-		(at 125.73 60.96 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "1a48ab04-a4d1-480d-97bb-bd25b63e8d13")
-		(property "Reference" "#FLG02"
-			(at 125.73 62.865 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "PWR_FLAG"
-			(at 125.73 66.04 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 125.73 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 125.73 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Special symbol for telling ERC where power comes from"
-			(at 125.73 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "ac3d1816-dd04-4ca6-ba49-5b4bce5b1fec")
-		)
-		(instances
-			(project "LedScreen"
-				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "#FLG02")
 					(unit 1)
 				)
 			)
@@ -6399,6 +6473,76 @@
 			(project ""
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
 					(reference "C1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 152.4 38.1 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1b1de414-b890-445c-8d06-909f03b7898f")
+		(property "Reference" "C2"
+			(at 156.21 36.8299 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "1000uF"
+			(at 156.21 39.3699 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 153.3652 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 152.4 38.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 152.4 38.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "088586e8-991f-47b7-8fcb-21d106b03aac")
+		)
+		(pin "2"
+			(uuid "80743f99-8933-43a5-8bbd-1e4ae4f18d16")
+		)
+		(instances
+			(project ""
+				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
+					(reference "C2")
 					(unit 1)
 				)
 			)
