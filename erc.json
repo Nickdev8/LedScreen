@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schemas.kicad.org/erc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-02-28T00:34:48+0100",
+    "kicad_version": "9.0.7",
+    "sheets": [
+        {
+            "path": "/",
+            "uuid_path": "/6393ae6b-20d3-4709-8a4f-a83a956b3492",
+            "violations": [
+                {
+                    "description": "Symbol 'Teensy4.1' doesn't match copy in library 'teensy_library'",
+                    "items": [
+                        {
+                            "description": "Symbol U1 [Teensy4.1]",
+                            "pos": {
+                                "x": 0.9017,
+                                "y": 1.1303
+                            },
+                            "uuid": "5c221361-e814-4d5e-8c35-8e6272f5a5ef"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "lib_symbol_mismatch"
+                }
+            ]
+        }
+    ],
+    "source": "LedScreen.kicad_sch"
+}

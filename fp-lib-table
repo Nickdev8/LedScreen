@@ -1,0 +1,4 @@
+(fp_lib_table
+  (lib (name "teensy")(type "KiCad")(uri "${KIPRJMOD}/libraries/teensy.pretty")(options "")(descr "Teensy footprints (includes Teensy41)"))
+  (lib (name "LED_SMD")(type "KiCad")(uri "${KICAD9_FOOTPRINT_DIR}/LED_SMD.pretty")(options "")(descr "Official KiCad SMD LED footprints (includes WS2812B PLCC4 5x5)"))
+)
