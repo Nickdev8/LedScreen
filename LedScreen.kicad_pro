@@ -54,35 +54,15 @@
       "diff_pair_dimensions": [],
       "drc_exclusions": [
         [
-          "lib_footprint_mismatch|58591058|6488861|a63adaef-9a60-4b75-85f6-d77bd3028b77|00000000-0000-0000-0000-000000000000",
-          "This is intended, i wanted to flip the GND with the data pin to nicly pair with the opitise side of another board"
-        ],
-        [
-          "unconnected_items|14500000|23328793|F.Cu|4|2c2a53cc-fd9a-4b6a-85fa-e1059c5c4067|d0d27842-5e6c-451e-9112-72e412b8f297",
+          "unconnected_items|11500000|58000000|F.Cu|4|1c482dec-b5f1-4656-98f4-170a0a842ea6|db887038-087c-4f5d-8672-d23ab4970701",
           ""
         ],
         [
-          "unconnected_items|37780000|32500000|F.Cu|4|ffb48776-bcd0-4b30-a205-96e9076ac2e9|5ef7a2e4-4c1a-45cd-b8f0-ea3be87899cd",
+          "unconnected_items|11575000|27745900|F.Cu|4|82b59f5c-c7c0-43ad-8d4a-82acf910be75|9a742abf-2b66-4426-a978-7e56f16da83e",
           ""
         ],
         [
-          "unconnected_items|37780000|45200000|F.Cu|4|8f0b3f5a-f745-43ef-9768-d013cc221865|d8d5bb29-79f1-4a1e-928e-6bcf8e373451",
-          ""
-        ],
-        [
-          "unconnected_items|41050000|25000000|F.Cu|4|eac16e3e-6157-4735-8e1b-d8b409619d0c|fb37af15-f72c-4676-9f23-770e2039f710",
-          ""
-        ],
-        [
-          "unconnected_items|44936024|22400000|F.Cu|4|a5e16028-79ad-4c11-9c22-c2559fa0dedd|29801602-d85c-46f5-9f18-3c4d63fb304e",
-          ""
-        ],
-        [
-          "unconnected_items|47480000|22400000|F.Cu|4|c35cae37-1afa-4dae-bcae-440bd7112280|58000119-59cf-413d-a5a4-edf2e17bbd55",
-          ""
-        ],
-        [
-          "unconnected_items|51528566|17582231|F.Cu|4|b81c16dc-54d2-4b39-9a17-a12347d40c02|a416cded-4fa1-4d0d-8372-402adec706e3",
+          "unconnected_items|13312000|35233200|F.Cu|4|8fb49fe4-f21e-4d9c-89ea-8caaba0b0355|ca90d102-e2db-4d6a-92c4-d387e3b3b8af",
           ""
         ]
       ],
@@ -250,7 +230,13 @@
       "mfg": "",
       "mpn": ""
     },
-    "layer_pairs": [],
+    "layer_pairs": [
+      {
+        "bottomLayer": 2,
+        "enabled": true,
+        "topLayer": 0
+      }
+    ],
     "layer_presets": [],
     "viewports": []
   },
