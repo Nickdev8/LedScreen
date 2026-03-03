@@ -830,6 +830,380 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Connector_Generic:Conn_01x10"
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at 0 12.7 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Conn_01x10"
+				(at 0 -15.24 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Generic connector, single row, 01x10, script generated (kicad-library-utils/schlib/autogen/connector/)"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "connector"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Connector*:*_1x??_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "Conn_01x10_1_1"
+				(rectangle
+					(start -1.27 11.43)
+					(end 1.27 -13.97)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(rectangle
+					(start -1.27 10.287)
+					(end 0 10.033)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 7.747)
+					(end 0 7.493)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 5.207)
+					(end 0 4.953)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 2.667)
+					(end 0 2.413)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 0.127)
+					(end 0 -0.127)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 -2.413)
+					(end 0 -2.667)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 -4.953)
+					(end 0 -5.207)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 -7.493)
+					(end 0 -7.747)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 -10.033)
+					(end 0 -10.287)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 -12.573)
+					(end 0 -12.827)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -5.08 10.16 0)
+					(length 3.81)
+					(name "Pin_1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 7.62 0)
+					(length 3.81)
+					(name "Pin_2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 5.08 0)
+					(length 3.81)
+					(name "Pin_3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 2.54 0)
+					(length 3.81)
+					(name "Pin_4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 0 0)
+					(length 3.81)
+					(name "Pin_5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -2.54 0)
+					(length 3.81)
+					(name "Pin_6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -5.08 0)
+					(length 3.81)
+					(name "Pin_7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -7.62 0)
+					(length 3.81)
+					(name "Pin_8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -10.16 0)
+					(length 3.81)
+					(name "Pin_9"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "9"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -12.7 0)
+					(length 3.81)
+					(name "Pin_10"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "10"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Connector_Generic:Conn_01x13"
 			(pin_names
 				(offset 1.016)
@@ -3730,6 +4104,28 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "Default 0R. Populate 220–330Ω if ringing or instability occurs."
+		(exclude_from_sim no)
+		(at 148.082 29.464 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "39b3e185-8a7f-4a4b-92b9-4ce83d5f66c0")
+	)
+	(text "Optional series resistors for WS2812 signal integrity."
+		(exclude_from_sim no)
+		(at 148.082 27.559 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "64e522a0-340b-46a9-8464-5fa47788df7b")
+	)
 	(junction
 		(at 105.41 76.2)
 		(diameter 0)
@@ -3747,6 +4143,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "2a3662ac-e9b9-47db-ba69-1f2ffde78a75")
+	)
+	(junction
+		(at 45.72 63.5)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "64fe8d4d-5982-43eb-88de-dac0140e92a1")
 	)
 	(junction
 		(at 105.41 66.04)
@@ -3777,12 +4179,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "bd13dbd0-00d6-4c2a-b548-63c297a2bd77")
-	)
-	(junction
-		(at 45.72 63.5)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "c9241d29-0a9a-427a-8b36-7f9aaec9dad4")
 	)
 	(no_connect
 		(at 219.71 38.1)
@@ -4870,6 +5266,28 @@
 			)
 		)
 	)
+	(global_label "SWCLK"
+		(shape input)
+		(at 76.2 170.18 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "670ec785-926f-4682-a28a-e02830242f91")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 85.4142 170.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "MODE"
 		(shape input)
 		(at 30.48 124.46 180)
@@ -5125,28 +5543,6 @@
 		(uuid "7b953cb9-a270-47ee-955b-6bf0bfba7e72")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 69.2067 81.28 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "SWCLK"
-		(shape input)
-		(at 76.2 170.18 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "7eb5659d-ae09-4d3d-8a6a-dc33d3abcf26")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 85.4142 170.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6346,16 +6742,16 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 182.88 133.35 90)
+		(at 182.88 101.6 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "08de32a2-0467-4215-90d6-d19bc325a535")
-		(property "Reference" "#PWR046"
-			(at 186.69 133.35 0)
+		(uuid "0c6505e4-104e-405c-bdb0-ac1117a81cdc")
+		(property "Reference" "#PWR026"
+			(at 186.69 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6364,7 +6760,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 178.55 133.35 90)
+			(at 178.55 101.6 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6373,7 +6769,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 182.88 133.35 0)
+			(at 182.88 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6382,7 +6778,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 182.88 133.35 0)
+			(at 182.88 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6391,7 +6787,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 182.88 133.35 0)
+			(at 182.88 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6400,12 +6796,78 @@
 			)
 		)
 		(pin "1"
-			(uuid "7b24ebc4-af50-4cb2-9f61-c1904ad8ffa2")
+			(uuid "021dc772-2c14-4d9f-9de2-2ae1004595ca")
 		)
 		(instances
 			(project "LedScreen"
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "#PWR046")
+					(reference "#PWR026")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 182.88 114.3 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "0d314e5a-12fd-4e85-bdc0-1d05f3168950")
+		(property "Reference" "#PWR041"
+			(at 186.69 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 174.74 114.3 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 182.88 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 182.88 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 182.88 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "06163360-6312-478b-88bc-6ca2e4db7c06")
+		)
+		(instances
+			(project "LedScreen"
+				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
+					(reference "#PWR041")
 					(unit 1)
 				)
 			)
@@ -6613,72 +7075,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 182.88 158.75 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "17baa0d0-7621-4175-b9f1-9c3981dd152a")
-		(property "Reference" "#PWR051"
-			(at 186.69 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 174.74 158.75 270)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 182.88 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 182.88 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 182.88 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "e9a46892-6b66-492f-841e-2cec2e10e706")
-		)
-		(instances
-			(project "LedScreen"
-				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "#PWR051")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Connector_Generic:Conn_01x03")
 		(at 224.79 147.32 0)
 		(unit 1)
@@ -6704,9 +7100,10 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_XH_S3B-XH-SM4-TB_1x03-1MP_P2.50mm_Horizontal"
 			(at 224.79 147.32 0)
 			(effects
 				(font
@@ -6981,9 +7378,10 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_XH_S3B-XH-SM4-TB_1x03-1MP_P2.50mm_Horizontal"
 			(at 224.79 93.98 0)
 			(effects
 				(font
@@ -7029,6 +7427,73 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+5V")
+		(at 182.88 106.68 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "229cbe4f-cf9b-4c48-8cbb-a12e42a57a6f")
+		(property "Reference" "#PWR028"
+			(at 186.69 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 178.55 106.68 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 182.88 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 182.88 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 182.88 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "03102b66-b82f-4a40-8e91-d7af0b684a4a")
+		)
+		(instances
+			(project "LedScreen"
+				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
+					(reference "#PWR028")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 149.86 46.99 90)
 		(unit 1)
@@ -7046,7 +7511,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "330 (0-330)"
+		(property "Value" "0R"
 			(at 155.0476 47.0572 90)
 			(effects
 				(font
@@ -7054,7 +7519,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
 			(at 149.86 48.768 90)
 			(effects
 				(font
@@ -7073,6 +7538,15 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 149.86 46.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DNP" "Yes"
 			(at 149.86 46.99 0)
 			(effects
 				(font
@@ -7114,7 +7588,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "330 (0-330)"
+		(property "Value" "0R"
 			(at 155.0476 49.5972 90)
 			(effects
 				(font
@@ -7122,7 +7596,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
 			(at 149.86 51.308 90)
 			(effects
 				(font
@@ -7141,6 +7615,15 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 149.86 49.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DNP" "Yes"
 			(at 149.86 49.53 0)
 			(effects
 				(font
@@ -7182,7 +7665,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "330 (0-330)"
+		(property "Value" "0R"
 			(at 155.0476 41.9772 90)
 			(effects
 				(font
@@ -7190,7 +7673,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
 			(at 149.86 43.688 90)
 			(effects
 				(font
@@ -7209,6 +7692,15 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 149.86 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DNP" "Yes"
 			(at 149.86 41.91 0)
 			(effects
 				(font
@@ -7390,9 +7882,10 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_XH_S3B-XH-SM4-TB_1x03-1MP_P2.50mm_Horizontal"
 			(at 224.79 138.43 0)
 			(effects
 				(font
@@ -7570,73 +8063,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+5V")
-		(at 182.88 148.59 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "38a2ef27-0286-4c76-ae27-3a10aa279c7c")
-		(property "Reference" "#PWR03"
-			(at 186.69 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+5V"
-			(at 178.55 148.59 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 182.88 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 182.88 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 182.88 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "88b01825-4e7d-4e6c-928f-f957407e7789")
-		)
-		(instances
-			(project "LedScreen"
-				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "#PWR03")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 219.71 50.8 270)
 		(unit 1)
@@ -7698,6 +8124,72 @@
 			(project ""
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
 					(reference "#PWR053")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 182.88 104.14 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "39c51aab-76f9-43d6-857b-3c54d67eafd1")
+		(property "Reference" "#PWR027"
+			(at 186.69 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 174.74 104.14 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 182.88 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 182.88 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 182.88 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "12b2f1ef-a83b-4440-9e57-eee13b8b1e52")
+		)
+		(instances
+			(project "LedScreen"
+				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
+					(reference "#PWR027")
 					(unit 1)
 				)
 			)
@@ -7770,7 +8262,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 182.88 128.27 270)
+		(at 182.88 99.06 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7778,7 +8270,7 @@
 		(dnp no)
 		(uuid "3f83ce1d-7cc2-42bb-851a-69a0af45bd7f")
 		(property "Reference" "#PWR045"
-			(at 186.69 128.27 0)
+			(at 186.69 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7787,7 +8279,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 174.74 128.27 270)
+			(at 174.74 99.06 270)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7796,7 +8288,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 182.88 128.27 0)
+			(at 182.88 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7805,7 +8297,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 182.88 128.27 0)
+			(at 182.88 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7814,7 +8306,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 182.88 128.27 0)
+			(at 182.88 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7829,73 +8321,6 @@
 			(project "LedScreen"
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
 					(reference "#PWR045")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+5V")
-		(at 182.88 140.97 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "413a98ed-ac27-45e2-9e7a-dff53c94f6fa")
-		(property "Reference" "#PWR048"
-			(at 186.69 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+5V"
-			(at 178.55 140.97 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 182.88 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 182.88 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 182.88 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "eb111e44-ce89-4183-b851-af4e817cb08a")
-		)
-		(instances
-			(project "LedScreen"
-				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "#PWR048")
 					(unit 1)
 				)
 			)
@@ -8000,9 +8425,10 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_XH_S3B-XH-SM4-TB_1x03-1MP_P2.50mm_Horizontal"
 			(at 224.79 129.54 0)
 			(effects
 				(font
@@ -8073,6 +8499,7 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x13_P2.54mm_Vertical"
@@ -8151,86 +8578,16 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector_Generic:Conn_01x02")
-		(at 187.96 148.59 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "47faa4c2-a7ea-4300-82d3-5427c7853974")
-		(property "Reference" "J_PWRA4"
-			(at 190.5 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "Conn_01x02"
-			(at 190.5 151.13 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Horizontal"
-			(at 187.96 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 187.96 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 187.96 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "f5d7e021-fa11-4178-aa3b-837709b43d35")
-		)
-		(pin "2"
-			(uuid "97f04313-2d63-4eb0-bec4-e16fdba5037a")
-		)
-		(instances
-			(project "LedScreen"
-				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "J_PWRA4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
-		(at 182.88 135.89 270)
+		(at 182.88 119.38 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "4c50a866-09f5-46f4-bd94-147c1e4b391e")
-		(property "Reference" "#PWR047"
-			(at 186.69 135.89 0)
+		(uuid "483ba3b7-5db6-42c8-9d2d-96e5fc4307e3")
+		(property "Reference" "#PWR043"
+			(at 186.69 119.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8239,7 +8596,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 174.74 135.89 270)
+			(at 174.74 119.38 270)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8248,7 +8605,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 182.88 135.89 0)
+			(at 182.88 119.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8257,7 +8614,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 182.88 135.89 0)
+			(at 182.88 119.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8266,7 +8623,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 182.88 135.89 0)
+			(at 182.88 119.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8275,12 +8632,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "c281de81-3a72-43cb-ad90-f30d09c26edd")
+			(uuid "b7117818-6b11-4a0d-a1b4-ebe937fa5774")
 		)
 		(instances
 			(project "LedScreen"
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "#PWR047")
+					(reference "#PWR043")
 					(unit 1)
 				)
 			)
@@ -8365,8 +8722,8 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "4d8c9844-0ebf-4a68-ad9e-c8d93c084a41")
-		(property "Reference" "J_LED_5V1"
-			(at 165.608 151.765 90)
+		(property "Reference" "V5"
+			(at 162.306 151.765 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8379,9 +8736,10 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_1.00mm:PinHeader_1x01_P1.00mm_Vertical"
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
 			(at 158.242 153.162 0)
 			(effects
 				(font
@@ -8414,77 +8772,7 @@
 		(instances
 			(project ""
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "J_LED_5V1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector_Generic:Conn_01x02")
-		(at 187.96 125.73 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "56096073-b9ec-46df-be2d-2a62ce5e75a6")
-		(property "Reference" "J_PWRA1"
-			(at 190.5 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "Conn_01x02"
-			(at 190.5 128.27 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Horizontal"
-			(at 187.96 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 187.96 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 187.96 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "52be6d80-efed-42af-b156-fe5d7cf8edc2")
-		)
-		(pin "2"
-			(uuid "ae39f110-2489-4cb4-b1a1-67de4d605548")
-		)
-		(instances
-			(project "LedScreen"
-				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "J_PWRA1")
+					(reference "V5")
 					(unit 1)
 				)
 			)
@@ -8551,76 +8839,6 @@
 			(project "LedScreen"
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
 					(reference "#PWR02")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector_Generic:Conn_01x02")
-		(at 187.96 133.35 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "59a8d819-d03b-41c8-8630-575b44fbb2c8")
-		(property "Reference" "J_PWRA2"
-			(at 190.5 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "Conn_01x02"
-			(at 190.5 135.89 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Horizontal"
-			(at 187.96 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 187.96 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 187.96 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "8db620cd-786e-42d4-aa0e-87491f323cc5")
-		)
-		(pin "2"
-			(uuid "e8e8c379-c161-41bb-b563-8a1075a953ee")
-		)
-		(instances
-			(project "LedScreen"
-				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "J_PWRA2")
 					(unit 1)
 				)
 			)
@@ -8912,9 +9130,10 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_XH_S3B-XH-SM4-TB_1x03-1MP_P2.50mm_Horizontal"
 			(at 224.79 156.21 0)
 			(effects
 				(font
@@ -9120,7 +9339,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Module:RaspberryPi_Pico_SMD_HandSolder"
+		(property "Footprint" "Module:RaspberryPi_Pico_Common_THT"
 			(at 53.34 92.71 0)
 			(effects
 				(font
@@ -9286,6 +9505,73 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+5V")
+		(at 182.88 111.76 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "75d82f75-2782-4f65-bd59-8d361225b9d2")
+		(property "Reference" "#PWR039"
+			(at 186.69 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 178.55 111.76 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 182.88 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 182.88 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 182.88 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d496194f-831a-4dda-acff-9a94311d4b47")
+		)
+		(instances
+			(project "LedScreen"
+				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
+					(reference "#PWR039")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C")
 		(at 105.41 71.12 0)
 		(unit 1)
@@ -9381,9 +9667,10 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_XH_S3B-XH-SM4-TB_1x03-1MP_P2.50mm_Horizontal"
 			(at 224.79 111.76 0)
 			(effects
 				(font
@@ -9454,9 +9741,10 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_XH_S3B-XH-SM4-TB_1x03-1MP_P2.50mm_Horizontal"
 			(at 224.79 120.65 0)
 			(effects
 				(font
@@ -9527,9 +9815,10 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_XH_S3B-XH-SM4-TB_1x03-1MP_P2.50mm_Horizontal"
 			(at 224.79 102.87 0)
 			(effects
 				(font
@@ -9576,7 +9865,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 182.88 125.73 90)
+		(at 182.88 96.52 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9585,7 +9874,7 @@
 		(fields_autoplaced yes)
 		(uuid "87087f5a-10c5-4eed-9f02-790d65b73bf5")
 		(property "Reference" "#PWR044"
-			(at 186.69 125.73 0)
+			(at 186.69 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9594,7 +9883,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 178.55 125.73 90)
+			(at 178.55 96.52 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9603,7 +9892,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 182.88 125.73 0)
+			(at 182.88 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9612,7 +9901,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 182.88 125.73 0)
+			(at 182.88 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9621,7 +9910,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 182.88 125.73 0)
+			(at 182.88 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9777,15 +10066,15 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 182.88 143.51 270)
+		(at 182.88 109.22 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "8b1aa7f0-c080-4610-8a16-439e62c228e0")
-		(property "Reference" "#PWR049"
-			(at 186.69 143.51 0)
+		(uuid "991d3e9e-fbab-4ddb-8b4d-d02167a6e766")
+		(property "Reference" "#PWR029"
+			(at 186.69 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9794,7 +10083,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 174.74 143.51 270)
+			(at 174.74 109.22 270)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9803,7 +10092,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 182.88 143.51 0)
+			(at 182.88 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9812,7 +10101,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 182.88 143.51 0)
+			(at 182.88 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9821,7 +10110,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 182.88 143.51 0)
+			(at 182.88 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9830,82 +10119,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "5dae3d45-bf28-4ae3-9632-dd0b50c52e0f")
+			(uuid "d61fc7a6-00d9-4ef6-abad-aead90766525")
 		)
 		(instances
 			(project "LedScreen"
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "#PWR049")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector_Generic:Conn_01x02")
-		(at 187.96 156.21 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "904d061b-cae7-4921-9c8b-74dbc10cd20d")
-		(property "Reference" "J_PWRA5"
-			(at 190.5 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "Conn_01x02"
-			(at 190.5 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Horizontal"
-			(at 187.96 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 187.96 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 187.96 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "195a7b40-d3b9-4988-8b5c-5078d8f6d088")
-		)
-		(pin "2"
-			(uuid "f8578aa8-7ba1-4449-9496-ad54aaac01dc")
-		)
-		(instances
-			(project "LedScreen"
-				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "J_PWRA5")
+					(reference "#PWR029")
 					(unit 1)
 				)
 			)
@@ -9977,16 +10196,35 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 182.88 151.13 270)
+		(lib_id "Connector_Generic:Conn_01x03")
+		(at 40.64 60.96 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "a0c2068e-67bd-4711-8223-b8fffa5c234b")
-		(property "Reference" "#PWR023"
-			(at 186.69 151.13 0)
+		(fields_autoplaced yes)
+		(uuid "a9f44b23-adf4-43f8-b1a1-ccb69b06c776")
+		(property "Reference" "J_PWR1"
+			(at 40.64 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x03"
+			(at 38.1 59.6901 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Connector_JST:JST_XH_S3B-XH-SM4-TB_1x03-1MP_P2.50mm_Horizontal"
+			(at 40.64 60.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9994,17 +10232,8 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
-			(at 174.74 151.13 270)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 182.88 151.13 0)
+		(property "Datasheet" "~"
+			(at 40.64 60.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10012,8 +10241,8 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" ""
-			(at 182.88 151.13 0)
+		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 40.64 60.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10021,22 +10250,19 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 182.88 151.13 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
+		(pin "3"
+			(uuid "f27a3c94-2045-486b-bce4-3bc3b30cbc4e")
+		)
+		(pin "2"
+			(uuid "afed88a0-e6ac-4a75-a15b-f0472516d8a4")
 		)
 		(pin "1"
-			(uuid "eef10096-7fed-47ce-a480-868469f6ec6b")
+			(uuid "88fd7149-dc55-46b3-812a-22c5dab3f3af")
 		)
 		(instances
 			(project "LedScreen"
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "#PWR023")
+					(reference "J_PWR1")
 					(unit 1)
 				)
 			)
@@ -10138,9 +10364,10 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical"
 			(at 137.16 132.08 0)
 			(effects
 				(font
@@ -10211,9 +10438,10 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical"
 			(at 137.16 143.51 0)
 			(effects
 				(font
@@ -10416,9 +10644,10 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_XH_S3B-XH-SM4-TB_1x03-1MP_P2.50mm_Horizontal"
 			(at 137.16 100.33 0)
 			(effects
 				(font
@@ -10489,9 +10718,10 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_XH_S3B-XH-SM4-TB_1x03-1MP_P2.50mm_Horizontal"
 			(at 137.16 107.95 0)
 			(effects
 				(font
@@ -10562,9 +10792,10 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_XH_S3B-XH-SM4-TB_1x03-1MP_P2.50mm_Horizontal"
 			(at 137.16 115.57 0)
 			(effects
 				(font
@@ -10635,9 +10866,10 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_XH_S3B-XH-SM4-TB_1x03-1MP_P2.50mm_Horizontal"
 			(at 137.16 123.19 0)
 			(effects
 				(font
@@ -11099,6 +11331,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Value" "Micro_SD_Card_Det_Hirose_DM3AT"
@@ -11197,7 +11430,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "330 (0-330)"
+		(property "Value" "0R"
 			(at 155.0476 52.1372 90)
 			(effects
 				(font
@@ -11205,7 +11438,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
 			(at 149.86 53.848 90)
 			(effects
 				(font
@@ -11224,6 +11457,15 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 149.86 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DNP" "Yes"
 			(at 149.86 52.07 0)
 			(effects
 				(font
@@ -11464,7 +11706,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "330 (0-330)"
+		(property "Value" "0R"
 			(at 155.0476 54.6772 90)
 			(effects
 				(font
@@ -11472,7 +11714,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
 			(at 149.86 56.388 90)
 			(effects
 				(font
@@ -11491,6 +11733,15 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 149.86 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DNP" "Yes"
 			(at 149.86 54.61 0)
 			(effects
 				(font
@@ -11532,7 +11783,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "330 (0-330)"
+		(property "Value" "0R"
 			(at 155.0476 57.2172 90)
 			(effects
 				(font
@@ -11540,7 +11791,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
 			(at 149.86 58.928 90)
 			(effects
 				(font
@@ -11559,6 +11810,15 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 149.86 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DNP" "Yes"
 			(at 149.86 57.15 0)
 			(effects
 				(font
@@ -11642,73 +11902,6 @@
 			(project "LedScreen"
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
 					(reference "#PWR035")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+5V")
-		(at 182.88 156.21 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "c337a4af-0f13-4429-8609-24baa19d7ece")
-		(property "Reference" "#PWR050"
-			(at 186.69 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+5V"
-			(at 178.55 156.21 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 182.88 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 182.88 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 182.88 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "d0fcd20e-7427-479e-93c3-80f613cdea34")
-		)
-		(instances
-			(project "LedScreen"
-				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "#PWR050")
 					(unit 1)
 				)
 			)
@@ -11843,6 +12036,101 @@
 			(project "LedScreen"
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
 					(reference "#PWR014")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x10")
+		(at 187.96 106.68 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c916742e-6ede-4f9f-8a6c-86ab8f81068a")
+		(property "Reference" "J_PWRA1"
+			(at 190.5 106.6799 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x10"
+			(at 190.5 109.2199 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical"
+			(at 187.96 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 187.96 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x10, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 187.96 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "d3b151b7-96db-489f-bf5e-4d041f88790a")
+		)
+		(pin "10"
+			(uuid "d14b2d56-7abb-4c2d-9e31-af10de8acfe7")
+		)
+		(pin "8"
+			(uuid "aacd8b96-64ab-41e4-8094-f59df21fecb9")
+		)
+		(pin "1"
+			(uuid "6e5545a7-4197-4d0f-895a-45b5f2d79bca")
+		)
+		(pin "3"
+			(uuid "24e1da34-b1a8-4eba-8e6f-ef007df0c1cc")
+		)
+		(pin "6"
+			(uuid "63f541f1-659f-4126-9f6e-ca1ddc4cc126")
+		)
+		(pin "5"
+			(uuid "e8fb35d9-416e-4a1f-8d63-c67261ec60cf")
+		)
+		(pin "7"
+			(uuid "55730e76-d642-4020-bf62-4b1faaf62bf3")
+		)
+		(pin "4"
+			(uuid "13463a1b-b4ad-4906-9fdd-dab17cbe9c30")
+		)
+		(pin "9"
+			(uuid "a445b330-75c4-47c1-88f2-9d0ae5968aee")
+		)
+		(instances
+			(project ""
+				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
+					(reference "J_PWRA1")
 					(unit 1)
 				)
 			)
@@ -12063,7 +12351,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "330 (0-330)"
+		(property "Value" "0R"
 			(at 155.0476 44.5172 90)
 			(effects
 				(font
@@ -12071,7 +12359,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
 			(at 149.86 46.228 90)
 			(effects
 				(font
@@ -12098,6 +12386,15 @@
 				(hide yes)
 			)
 		)
+		(property "DNP" "Yes"
+			(at 149.86 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "455ec061-3988-46cb-b5bd-bb2e3263fa47")
 		)
@@ -12108,76 +12405,6 @@
 			(project "LedScreen"
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
 					(reference "R3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector_Generic:Conn_01x02")
-		(at 40.64 63.5 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d3b644e6-ba0b-4b0a-b341-7bd2e51470b4")
-		(property "Reference" "J_PWR1"
-			(at 38.1 63.5001 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "Conn_01x02"
-			(at 38.1 60.9601 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Horizontal"
-			(at 40.64 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 40.64 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 40.64 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "ebc1c9b2-ba19-4d69-9549-d2b45cdfbeba")
-		)
-		(pin "2"
-			(uuid "a03c5947-08ef-4fa9-86d6-2d1bc8aa6502")
-		)
-		(instances
-			(project ""
-				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "J_PWR1")
 					(unit 1)
 				)
 			)
@@ -12318,76 +12545,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector_Generic:Conn_01x02")
-		(at 187.96 140.97 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d9b01c24-d7ad-4c9a-a067-3d0bfbe8d4bd")
-		(property "Reference" "J_PWRA3"
-			(at 190.5 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "Conn_01x02"
-			(at 190.5 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Horizontal"
-			(at 187.96 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 187.96 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 187.96 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "389e9627-9321-420a-b6d5-189e5a4a1154")
-		)
-		(pin "2"
-			(uuid "74a162e7-23cf-4143-8a8f-c695f4361fb2")
-		)
-		(instances
-			(project "LedScreen"
-				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
-					(reference "J_PWRA3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
 		(at 149.86 39.37 90)
 		(unit 1)
@@ -12405,7 +12562,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "330 (0-330)"
+		(property "Value" "0R"
 			(at 155.0476 39.4372 90)
 			(effects
 				(font
@@ -12413,7 +12570,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
 			(at 149.86 41.148 90)
 			(effects
 				(font
@@ -12432,6 +12589,15 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 149.86 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DNP" "Yes"
 			(at 149.86 39.37 0)
 			(effects
 				(font
@@ -12651,6 +12817,73 @@
 			(project "LedScreen"
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
 					(reference "#PWR07")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 182.88 116.84 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "f9ede08b-8c9f-4b83-b0f3-e3002d88e5d6")
+		(property "Reference" "#PWR042"
+			(at 186.69 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 178.55 116.84 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 182.88 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 182.88 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 182.88 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "7ff91025-8ae0-4135-bc61-fd11ebaf7c4f")
+		)
+		(instances
+			(project "LedScreen"
+				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
+					(reference "#PWR042")
 					(unit 1)
 				)
 			)

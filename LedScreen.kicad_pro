@@ -39,7 +39,7 @@
         "pads": {
           "drill": 1.0,
           "height": 1.7,
-          "width": 1.7
+          "width": 2.6
         },
         "silk_line_width": 0.1,
         "silk_text_italic": false,
@@ -52,20 +52,7 @@
         }
       },
       "diff_pair_dimensions": [],
-      "drc_exclusions": [
-        [
-          "unconnected_items|11500000|58000000|F.Cu|4|1c482dec-b5f1-4656-98f4-170a0a842ea6|db887038-087c-4f5d-8672-d23ab4970701",
-          ""
-        ],
-        [
-          "unconnected_items|11575000|27745900|F.Cu|4|82b59f5c-c7c0-43ad-8d4a-82acf910be75|9a742abf-2b66-4426-a978-7e56f16da83e",
-          ""
-        ],
-        [
-          "unconnected_items|13312000|35233200|F.Cu|4|8fb49fe4-f21e-4d9c-89ea-8caaba0b0355|ca90d102-e2db-4d6a-92c4-d387e3b3b8af",
-          ""
-        ]
-      ],
+      "drc_exclusions": [],
       "meta": {
         "version": 2
       },
@@ -488,7 +475,25 @@
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "priority": 2147483647,
         "schematic_color": "rgba(0, 0, 0, 0.000)",
-        "track_width": 0.2,
+        "track_width": 0.25,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.2,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "GND_POUR",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "priority": 300,
+        "schematic_color": "rgb(80, 80, 80)",
+        "track_width": 0.25,
         "via_diameter": 0.6,
         "via_drill": 0.3,
         "wire_width": 6
@@ -506,7 +511,7 @@
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "priority": 200,
         "schematic_color": "rgb(40, 90, 200)",
-        "track_width": 0.3,
+        "track_width": 0.25,
         "via_diameter": 0.6,
         "via_drill": 0.3,
         "wire_width": 6
@@ -524,27 +529,9 @@
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "priority": 100,
         "schematic_color": "rgb(200, 40, 40)",
-        "track_width": 1.2,
+        "track_width": 0.75,
         "via_diameter": 0.8,
         "via_drill": 0.4,
-        "wire_width": 6
-      },
-      {
-        "bus_width": 12,
-        "clearance": 0.2,
-        "diff_pair_gap": 0.25,
-        "diff_pair_via_gap": 0.25,
-        "diff_pair_width": 0.2,
-        "line_style": 0,
-        "microvia_diameter": 0.3,
-        "microvia_drill": 0.1,
-        "name": "SYNC",
-        "pcb_color": "rgba(0, 0, 0, 0.000)",
-        "priority": 300,
-        "schematic_color": "rgb(30, 150, 100)",
-        "track_width": 0.4,
-        "via_diameter": 0.6,
-        "via_drill": 0.3,
         "wire_width": 6
       }
     ],
@@ -559,8 +546,12 @@
         "pattern": "+5V"
       },
       {
-        "netclass": "PWR_5V",
+        "netclass": "GND_POUR",
         "pattern": "GND"
+      },
+      {
+        "netclass": "GND_POUR",
+        "pattern": "AGND"
       },
       {
         "netclass": "LED_DATA",
@@ -571,7 +562,7 @@
         "pattern": "T_OUT[0-7]"
       },
       {
-        "netclass": "SYNC",
+        "netclass": "LED_DATA",
         "pattern": "SYNC"
       }
     ]
