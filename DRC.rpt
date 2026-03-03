@@ -1,0 +1,24 @@
+** Drc report for LedScreen.kicad_pcb **
+** Created on 2026-03-03T11:24:08+0100 **
+
+** Found 3 DRC violations **
+[lib_footprint_mismatch]: Footprint 'DIP-20_W7.62mm' does not match copy in library 'Package_DIP'.
+    Local override; warning (excluded)
+    @(144,8950 mm, 87,3750 mm): Footprint 74HCT245
+    It looks to be the same, Just other pin boarders/roundness
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning (excluded)
+    @(87,0000 mm, 61,0000 mm): Rectangle on Edge.Cuts
+    @(86,8677 mm, 94,1161 mm): Segment of A1 on F.Silkscreen
+    This is okay. its just the SD card
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning (excluded)
+    @(87,0000 mm, 61,0000 mm): Rectangle on Edge.Cuts
+    @(86,8677 mm, 101,9161 mm): Segment of A1 on F.Silkscreen
+    This is okay. its just the SD card
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** End of Report **
