@@ -52,7 +52,20 @@
         }
       },
       "diff_pair_dimensions": [],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        [
+          "lib_footprint_mismatch|148700000|98805000|6ef5eb57-4fd6-432f-8463-f6a8870fe828|00000000-0000-0000-0000-000000000000",
+          "It looks to be the same, Just other pin boarders/roundness"
+        ],
+        [
+          "silk_edge_clearance|87000000|101916070|ee54b87b-dc8a-4657-b37f-639f27c5c9aa|9af9c8a3-b7e8-493f-a53b-18728b5f6475",
+          "This is okay. its just the SD card"
+        ],
+        [
+          "silk_edge_clearance|87000000|94116070|ee54b87b-dc8a-4657-b37f-639f27c5c9aa|956eda35-1823-4e49-ba43-4236dd3c31ed",
+          "This is okay. its just the SD card"
+        ]
+      ],
       "meta": {
         "version": 2
       },

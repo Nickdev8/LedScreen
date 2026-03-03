@@ -1,7 +1,7 @@
 (sym_lib_table
   (version 7)
-  (lib (name "project_logic")(type "KiCad")(uri "${KIPRJMOD}/libraries/project_logic.kicad_sym")(options "")(descr "Project logic symbols including 74HCT245"))
-  (lib (name "teensy_library")(type "KiCad")(uri "${KIPRJMOD}/libraries/teensy_library/teensy.kicad_sym")(options "")(descr "Teensy symbol library (includes Teensy4.1)"))
+  (lib (name "project_logic")(type "KiCad")(uri "${KIPRJMOD}/../libraries/project_logic.kicad_sym")(options "")(descr "Project logic symbols including 74HCT245"))
+  (lib (name "teensy_library")(type "KiCad")(uri "${KIPRJMOD}/../libraries/teensy_library/teensy.kicad_sym")(options "")(descr "Teensy symbol library (includes Teensy4.1)"))
   (lib (name "LED")(type "KiCad")(uri "${KICAD9_SYMBOL_DIR}/LED.kicad_sym")(options "")(descr "Official KiCad LED symbols (includes WS2812B)"))
   (lib (name "Connector")(type "KiCad")(uri "${KICAD9_SYMBOL_DIR}/Connector.kicad_sym")(options "")(descr "Official KiCad connector symbols (includes Micro_SD_Card variants)"))
 )

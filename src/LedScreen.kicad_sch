@@ -1928,7 +1928,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "MCU_Module:RaspberryPi_Pico_Debug"
+		(symbol "MCU_Module:RaspberryPi_Pico"
 			(pin_names
 				(offset 0.762)
 			)
@@ -1953,7 +1953,7 @@
 					(justify left)
 				)
 			)
-			(property "Footprint" "Module:RaspberryPi_Pico_SMD_HandSolder"
+			(property "Footprint" "Module:RaspberryPi_Pico_Common_Unspecified"
 				(at 0 -46.99 0)
 				(effects
 					(font
@@ -1971,7 +1971,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Versatile and inexpensive microcontroller module (with debug pins) powered by RP2040 dual-core Arm Cortex-M0+ processor up to 133 MHz, 264kB SRAM, 2MB QSPI flash; also supports Raspberry Pi Pico 2"
+			(property "Description" "Versatile and inexpensive microcontroller module powered by RP2040 dual-core Arm Cortex-M0+ processor up to 133 MHz, 264kB SRAM, 2MB QSPI flash; also supports Raspberry Pi Pico 2"
 				(at 0 -52.07 0)
 				(effects
 					(font
@@ -1980,7 +1980,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "RP2350A M33 RISC-V Hazard3 usb swd"
+			(property "ki_keywords" "RP2350A M33 RISC-V Hazard3 usb"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1989,7 +1989,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_fp_filters" "RaspberryPi?Pico?SMD*"
+			(property "ki_fp_filters" "RaspberryPi?Pico?Common* RaspberryPi?Pico?SMD*"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1998,7 +1998,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "RaspberryPi_Pico_Debug_0_1"
+			(symbol "RaspberryPi_Pico_0_1"
 				(rectangle
 					(start -19.05 34.29)
 					(end 19.05 -31.75)
@@ -2071,43 +2071,7 @@
 					)
 				)
 			)
-			(symbol "RaspberryPi_Pico_Debug_1_1"
-				(pin input line
-					(at -22.86 30.48 0)
-					(length 3.81)
-					(name "SWCLK"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "D1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin bidirectional line
-					(at -22.86 27.94 0)
-					(length 3.81)
-					(name "SWDIO"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "D3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
+			(symbol "RaspberryPi_Pico_1_1"
 				(pin passive line
 					(at -22.86 22.86 0)
 					(length 3.81)
@@ -2678,25 +2642,6 @@
 						)
 					)
 					(number "8"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -35.56 90)
-					(length 3.81)
-					(hide yes)
-					(name "GND"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "D2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -4104,28 +4049,6 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "Default 0R. Populate 220–330Ω if ringing or instability occurs."
-		(exclude_from_sim no)
-		(at 148.082 29.464 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "39b3e185-8a7f-4a4b-92b9-4ce83d5f66c0")
-	)
-	(text "Optional series resistors for WS2812 signal integrity."
-		(exclude_from_sim no)
-		(at 148.082 27.559 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "64e522a0-340b-46a9-8464-5fa47788df7b")
-	)
 	(junction
 		(at 105.41 76.2)
 		(diameter 0)
@@ -4195,6 +4118,10 @@
 	(no_connect
 		(at 219.71 55.88)
 		(uuid "b623db2e-3882-486b-b3cf-b0df1f1da59f")
+	)
+	(no_connect
+		(at 45.72 58.42)
+		(uuid "e250d9a4-9690-49f0-afed-c61ed882af82")
 	)
 	(no_connect
 		(at 219.71 58.42)
@@ -4641,28 +4568,6 @@
 		(uuid "1463f60c-3c8f-4c8a-83d7-65df4a42271e")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 247.9305 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "SWCLK"
-		(shape input)
-		(at 257.81 96.52 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "199d79df-1b91-4c64-9bcd-79cc27392f3f")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 248.5958 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5262,28 +5167,6 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "SWCLK"
-		(shape input)
-		(at 76.2 170.18 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "670ec785-926f-4682-a28a-e02830242f91")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 85.4142 170.18 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
 				(hide yes)
 			)
 		)
@@ -6542,28 +6425,6 @@
 			)
 		)
 	)
-	(global_label "SWDIO"
-		(shape input)
-		(at 76.2 167.64 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "f7e4ea2c-3b0a-4713-942e-97018bff14ff")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 85.0514 167.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "GPIO16"
 		(shape input)
 		(at 257.81 121.92 180)
@@ -6577,28 +6438,6 @@
 		(uuid "f9e34b87-fae2-4279-a555-13ce5f1768dd")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 247.9305 121.92 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "SWDIO"
-		(shape input)
-		(at 257.81 99.06 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "fcda71aa-55de-42d3-8483-88aa5de65637")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 248.9586 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7511,7 +7350,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "0R"
+		(property "Value" "220"
 			(at 155.0476 47.0572 90)
 			(effects
 				(font
@@ -7588,7 +7427,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "0R"
+		(property "Value" "220"
 			(at 155.0476 49.5972 90)
 			(effects
 				(font
@@ -7665,7 +7504,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "0R"
+		(property "Value" "220"
 			(at 155.0476 41.9772 90)
 			(effects
 				(font
@@ -9311,7 +9150,7 @@
 		)
 	)
 	(symbol
-		(lib_id "MCU_Module:RaspberryPi_Pico_Debug")
+		(lib_id "MCU_Module:RaspberryPi_Pico")
 		(at 53.34 139.7 180)
 		(unit 1)
 		(exclude_from_sim no)
@@ -9357,7 +9196,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Versatile and inexpensive microcontroller module (with debug pins) powered by RP2040 dual-core Arm Cortex-M0+ processor up to 133 MHz, 264kB SRAM, 2MB QSPI flash; also supports Raspberry Pi Pico 2"
+		(property "Description" "Versatile and inexpensive microcontroller module powered by RP2040 dual-core Arm Cortex-M0+ processor up to 133 MHz, 264kB SRAM, 2MB QSPI flash; also supports Raspberry Pi Pico 2"
 			(at 53.34 87.63 0)
 			(effects
 				(font
@@ -9402,9 +9241,6 @@
 		(pin "27"
 			(uuid "54968d58-d69b-48bb-946a-9053d5d83af9")
 		)
-		(pin "D2"
-			(uuid "5cdd3946-194f-454e-8c03-dd68c83cb158")
-		)
 		(pin "36"
 			(uuid "c9115642-fd27-437a-b843-b7bbd7e281e3")
 		)
@@ -9434,12 +9270,6 @@
 		)
 		(pin "30"
 			(uuid "592363a3-90f0-493b-8929-6b0b8af6dc26")
-		)
-		(pin "D3"
-			(uuid "1c9099c0-f986-4d5b-a08c-f49ec056c23a")
-		)
-		(pin "D1"
-			(uuid "e4867c06-786a-4169-af27-b641d57f514b")
 		)
 		(pin "28"
 			(uuid "2d005509-526f-4974-862e-6f206b7909a1")
@@ -10125,6 +9955,71 @@
 			(project "LedScreen"
 				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
 					(reference "#PWR029")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 257.81 96.52 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "9b29e0cf-2205-4ed6-9b00-8426cdb847ac")
+		(property "Reference" "#PWR023"
+			(at 261.62 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 251.714 96.52 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 257.81 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 257.81 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
+			(at 257.81 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "82566f44-95ed-4150-948c-2157d2a57ac7")
+		)
+		(instances
+			(project "LedScreen"
+				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
+					(reference "#PWR023")
 					(unit 1)
 				)
 			)
@@ -11430,7 +11325,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "0R"
+		(property "Value" "220"
 			(at 155.0476 52.1372 90)
 			(effects
 				(font
@@ -11706,7 +11601,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "0R"
+		(property "Value" "220"
 			(at 155.0476 54.6772 90)
 			(effects
 				(font
@@ -11783,7 +11678,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "0R"
+		(property "Value" "220"
 			(at 155.0476 57.2172 90)
 			(effects
 				(font
@@ -12351,7 +12246,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "0R"
+		(property "Value" "220"
 			(at 155.0476 44.5172 90)
 			(effects
 				(font
@@ -12545,6 +12440,73 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 257.81 99.06 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "dd65a7ea-dc5a-447b-b9fd-bd67c87ef188")
+		(property "Reference" "#PWR03"
+			(at 251.46 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 254 99.0599 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 257.81 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 257.81 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 257.81 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4a3c4522-c0cb-46d4-a972-8811fea8024f")
+		)
+		(instances
+			(project "LedScreen"
+				(path "/6393ae6b-20d3-4709-8a4f-a83a956b3492"
+					(reference "#PWR03")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 149.86 39.37 90)
 		(unit 1)
@@ -12562,7 +12524,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "0R"
+		(property "Value" "220"
 			(at 155.0476 39.4372 90)
 			(effects
 				(font
