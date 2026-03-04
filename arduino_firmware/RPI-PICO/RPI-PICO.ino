@@ -1,6 +1,6 @@
 #include <Adafruit_NeoPixel.h>
 
-#define LED_PIN 2
+#define LED_PIN 28
 #define LED_COUNT 30
 
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
@@ -9,17 +9,34 @@ uint8_t frameBuffer[LED_COUNT * 3];
 uint32_t indexPos = 0;
 
 void setup() {
+
   Serial.begin(500000);
-  while (!Serial) { }
+  delay(1000);
+
   strip.begin();
+  strip.clear();
+  strip.show();
+
+  // boot indicator
+  strip.setPixelColor(0, 0, 40, 0);
+  strip.show();
+  delay(300);
+  strip.clear();
   strip.show();
 }
 
 void loop() {
+
   while (Serial.available()) {
-    frameBuffer[indexPos++] = Serial.read();
+
+    uint8_t incoming = Serial.read();
+
+    if (indexPos < sizeof(frameBuffer)) {
+      frameBuffer[indexPos++] = incoming;
+    }
 
     if (indexPos >= sizeof(frameBuffer)) {
+
       for (int i = 0; i < LED_COUNT; i++) {
         strip.setPixelColor(
           i,
@@ -28,6 +45,7 @@ void loop() {
           frameBuffer[i * 3 + 2]
         );
       }
+
       strip.show();
       indexPos = 0;
     }
