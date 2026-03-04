@@ -14981,46 +14981,6 @@
 		(layer "Edge.Cuts")
 		(uuid "ee54b87b-dc8a-4657-b37f-639f27c5c9aa")
 	)
-	(gr_text "/home/nick/Downloads/sans.kicad_sym"
-		(at 31.5 31.5 0)
-		(layer "F.Cu")
-		(uuid "12e7532c-7be3-4a72-b604-eb0fe574e2f6")
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-	)
-	(gr_text "/home/nick/Downloads/sans.kicad_sym"
-		(at 42 36.5 0)
-		(layer "F.Cu")
-		(uuid "1782a6ae-9d6d-46ee-9252-6e80aec66a77")
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-	)
-	(gr_text "/home/nick/Downloads/sans.kicad_sym"
-		(at 65 160.5 0)
-		(layer "F.Cu")
-		(uuid "32f950e8-bf64-4755-9f2f-a9dfa1d7cdeb")
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-	)
-	(gr_text "/home/nick/Downloads/sans.kicad_sym"
-		(at 119.5 166.5 0)
-		(layer "F.Cu")
-		(uuid "6ac23bdc-b816-4f92-91e0-e64716f10b6a")
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-	)
 	(gr_text "Ruben Straks"
 		(at 173 66.5 0)
 		(layer "B.SilkS")
