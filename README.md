@@ -1,3 +1,5 @@
+https://github.com/user-attachments/assets/429253ec-16dd-4379-a7f1-76a112b9e6f4
+
 # Led Control Board
 Status: PCB designed, DRC clean, awaiting fabrication.
 This is a board to control up to 20, 16x16 LED matrix panels using xLights.
