@@ -37,9 +37,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 2.0,
-          "height": 3.4,
-          "width": 3.4
+          "drill": 3.2,
+          "height": 3.2,
+          "width": 3.2
         },
         "silk_line_width": 0.1,
         "silk_text_italic": false,
@@ -53,6 +53,10 @@
       },
       "diff_pair_dimensions": [],
       "drc_exclusions": [
+        [
+          "courtyards_overlap|90887075|131904087|7c024943-7bfb-4d4f-b96a-a087e0f25339|7f7eddd8-9383-4cc6-8b68-b370e30ae892",
+          ""
+        ],
         [
           "lib_footprint_mismatch|148700000|98805000|6ef5eb57-4fd6-432f-8463-f6a8870fe828|00000000-0000-0000-0000-000000000000",
           "It looks to be the same, Just other pin boarders/roundness"
@@ -80,7 +84,7 @@
         "diff_pair_gap_out_of_range": "error",
         "diff_pair_uncoupled_length_too_long": "error",
         "drill_out_of_range": "error",
-        "duplicate_footprints": "warning",
+        "duplicate_footprints": "ignore",
         "extra_footprint": "warning",
         "footprint": "error",
         "footprint_filters_mismatch": "ignore",
@@ -585,7 +589,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "geibers/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
