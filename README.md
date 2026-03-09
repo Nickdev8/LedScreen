@@ -51,6 +51,26 @@ To Install:
 3. Then upload the sketch from `arduino_firmware/`.
 - If you need manual USB mass-storage mode, hold `BOOTSEL` while connecting USB before upload.
 
+### SD Card Playback
+- The Pico firmware looks for animation files in the SD card root and in `/animations`.
+- Supported raw file extensions are `.rgb`, `.raw`, and `.bin`.
+- Raw files are played at `20 FPS` and must be a whole number of frames where each frame is `30 LEDs * 3 bytes = 90 bytes`.
+- Raw frame byte order is `R, G, B` for LED 0, then `R, G, B` for LED 1, and so on.
+- Files are played in alphabetical order. With one file on the card, playback wraps back to that file.
+- USB serial frame streaming still works and temporarily overrides SD playback while data is arriving.
+
+#### Optional `.lsa` Header Format
+If you want per-file frame-rate and loop control, use a `.lsa` file with this 16-byte header before the raw RGB frame data:
+
+```text
+0x00-0x03  "LSA1"
+0x04-0x05  LED count, little-endian (`30`)
+0x06-0x07  FPS, little-endian
+0x08-0x0B  Frame count, little-endian
+0x0C       Flags (`bit 0 = loop this file`)
+0x0D-0x0F  Reserved
+```
+
 ## Note
 I also included an xLights example for controlling this board.
 xLights configuration depends on the final data path used between xLights and the Pico.
