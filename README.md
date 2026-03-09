@@ -1,3 +1,5 @@
+![Blender Render](RENDER.png)
+
 # Led Control Board
 Status: PCB designed, DRC clean, awaiting fabrication.
 This is a board to control up to 20, 16x16 LED matrix panels using xLights.
@@ -8,7 +10,7 @@ This is a board to control up to 20, 16x16 LED matrix panels using xLights.
 One of my close friends, Ruben, wanted to build a big LED panel project with me so we could display text, animations, and more.
 After this board is fully working, I also want to use it in a deadmau5-style head build for Comic-Con. Shown in the video below
 
-### What It Does
+### What??
 - Raspberry Pi Pico (RP2040) drives WS2812 LED panels.
 - 74HCT245 shifts data from 3.3V logic to 5V logic.
 - The board includes sync in/out so multiple boards can be chained.
@@ -24,10 +26,10 @@ After this board is fully working, I also want to use it in a deadmau5-style hea
 ```
 /
 ├── README.md
-├── JOURNAL.md
 ├── gerber.zip
-├── schematic.pdf
-├── cart.png
+├── Gerber/
+├── arduino_firmware/
+├── bom/
 └── src/
     ├── LedScreen.kicad_sch
     ├── LedScreen.kicad_pcb
@@ -69,9 +71,11 @@ Interactive BOM: [cdn.nickesselman.nl](https://cdn.nickesselman.nl/ledpanel/ibom
 - Hardware: CERN-OHL-S
 - Firmware/Software: MIT License
 
+Inspiration:
 https://github.com/user-attachments/assets/429253ec-16dd-4379-a7f1-76a112b9e6f4
 
-<img src="https://github.com/user-attachments/assets/429253ec-16dd-4379-a7f1-76a112b9e6f4" width="300"/>
-<img src="https://github.com/user-attachments/assets/d7bbc4a8-936d-4ac1-942d-6e1488b42e54" width="300"/>
-<img src="https://github.com/user-attachments/assets/de6a28c5-83e9-437f-b174-5c22921fa802" width="300"/>
-<img src="https://github.com/user-attachments/assets/fc3ba669-05bd-4fdf-abde-7d72e0637474" width="300"/>
+src/
+![jclpcb cart](jlcMyOrders.png)
+![gerbersalt text](gerbers.png)
+![pcb](pcb.png)
+![ascem](scem.png)

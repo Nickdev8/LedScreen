@@ -1,10 +1,29 @@
 ** Drc report for LedScreen.kicad_pcb **
-** Created on 2026-03-03T11:24:08+0100 **
+** Created on 2026-03-09T21:26:26+0100 **
 
-** Found 3 DRC violations **
+** Found 9 DRC violations **
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error
+    @(109,0421 mm, 138,6450 mm): Footprint J_LED6
+    @(102,0000 mm, 133,0000 mm): Footprint REF**
+[text_height]: Text height out of range (board setup constraints silk text height min height 0,8000 mm; actual 0,5000 mm)
+    Rule: board setup constraints silk text height; warning
+    @(90,4880 mm, 130,0647 mm): PCB text 'LED Power' on F.Silkscreen
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning
+    @(87,0000 mm, 61,0000 mm): Rectangle on Edge.Cuts
+    @(86,5244 mm, 77,2597 mm): Rectangle on F.Silkscreen
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning
+    @(87,0000 mm, 61,0000 mm): Rectangle on Edge.Cuts
+    @(86,5000 mm, 82,4924 mm): Rectangle on F.Silkscreen
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning
+    @(87,0000 mm, 61,0000 mm): Rectangle on Edge.Cuts
+    @(151,8854 mm, 85,2734 mm): Polygon of G*** on B.Silkscreen
 [lib_footprint_mismatch]: Footprint 'DIP-20_W7.62mm' does not match copy in library 'Package_DIP'.
     Local override; warning (excluded)
-    @(144,8950 mm, 87,3750 mm): Footprint 74HCT245
+    @(144,8950 mm, 87,3750 mm): Footprint U1
     It looks to be the same, Just other pin boarders/roundness
 [silk_edge_clearance]: Silkscreen clipped by board edge
     Rule: board setup constraints silk; warning (excluded)
@@ -16,9 +35,37 @@
     @(87,0000 mm, 61,0000 mm): Rectangle on Edge.Cuts
     @(86,8677 mm, 101,9161 mm): Segment of A1 on F.Silkscreen
     This is okay. its just the SD card
+[courtyards_overlap]: Courtyards overlap
+    Rule: board setup constraints courtyard; error (excluded)
+    @(89,1221 mm, 130,8828 mm): Footprint V2
+    @(89,1256 mm, 133,6691 mm): Footprint V5
 
 ** Found 0 unconnected pads **
 
-** Found 0 Footprint errors **
+** Found 8 Footprint errors **
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(90,9847 mm, 78,6350 mm): Footprint <no reference designator>
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(117,0000 mm, 123,0000 mm): Footprint REF**
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(169,0000 mm, 91,0000 mm): Footprint REF**
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(90,9847 mm, 81,1750 mm): Footprint <no reference designator>
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(102,0000 mm, 133,0000 mm): Footprint REF**
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(159,5000 mm, 133,0000 mm): Footprint REF**
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(122,5000 mm, 73,0000 mm): Footprint REF**
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(90,9847 mm, 83,7150 mm): Footprint <no reference designator>
 
 ** End of Report **
