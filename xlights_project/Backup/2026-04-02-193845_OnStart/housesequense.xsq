@@ -17,6 +17,7 @@
     <imageDir></imageDir>
   </head>
   <nextid>1</nextid>
+  <Jukebox/>
   <ColorPalettes>
     <ColorPalette>C_BUTTON_Palette1=#FFFFFF,C_BUTTON_Palette2=#FF0000,C_BUTTON_Palette3=#00FF00,C_BUTTON_Palette4=#0000FF,C_BUTTON_Palette5=#FFFF00,C_BUTTON_Palette6=#000000,C_BUTTON_Palette7=#00FFFF,C_BUTTON_Palette8=#FF00FF,C_CHECKBOX_Palette2=1,C_CHECKBOX_Palette7=1,C_CHECKBOX_Palette8=1</ColorPalette>
   </ColorPalettes>
@@ -39,7 +40,7 @@
     <Element type="model" name="pico">
       <EffectLayer>
         <Effect ref="0" name="Pinwheel" startTime="850" endTime="4350" palette="0"/>
-        <Effect ref="1" name="Text" selected="1" id="1" startTime="5700" endTime="10700" palette="0"/>
+        <Effect ref="1" name="Text" id="1" startTime="5700" endTime="10700" palette="0"/>
         <Effect ref="2" name="Pictures" id="2" startTime="12250" endTime="19050" palette="0"/>
       </EffectLayer>
     </Element>

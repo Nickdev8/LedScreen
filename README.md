@@ -4,6 +4,10 @@
 Status: PCB designed, DRC clean, awaiting fabrication.
 This is a board to control up to 20, 16x16 LED matrix panels using xLights.
 
+## To understand how to run
+To update the code on the MCU, I would really sudgest reading [The firmware instuctions](FIRMWARE_INSTUCTIONS.md).
+And to update the Animations on the display, read [updating animatnios instuctions](ANIMATIONS_INSTUCTIONS.md)
+
 ## Project Purpose
 
 ### Why I Built This

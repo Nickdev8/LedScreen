@@ -1,0 +1,8 @@
+# path,frame_delay_ms,loop
+# Each frame is LED_COUNT*3 bytes in RGB order.
+# Current config: 16x16 panel, 2 high x 10 wide = 20 panels.
+# LED_COUNT=5120, frame size = 15360 bytes.
+
+/anim_idle.rgb,33,1
+/anim_alert.rgb,50,1
+/anim_once.rgb,40,0
