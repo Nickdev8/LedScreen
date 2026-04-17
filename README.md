@@ -1,11 +1,8 @@
 ![Blender Render](RENDER.png)
 ![irl pcb](PXL_20260321_124728446.MP.jpg)
 # Led Control Board
-Status: PCB designed, DRC clean, awaiting fabrication.
-This is a board to control up to 20, 16x16 LED matrix panels using xLights.
-
 ## To understand how to run
-To update the code on the MCU, I would really sudgest reading [The firmware instuctions](FIRMWARE_INSTUCTIONS.md).
+To update the code on the MCU, I would sudgest reading [The firmware instuctions](FIRMWARE_INSTUCTIONS.md).
 And to update the Animations on the display, read [updating animatnios instuctions](ANIMATIONS_INSTUCTIONS.md)
 
 ## Project Purpose
