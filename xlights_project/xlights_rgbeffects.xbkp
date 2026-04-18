@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xrgb>
   <models>
-    <model StringType="RGB Nodes" Dir="L" Antialias="1" PixelSize="2" Transparency="0" parm3="1" StartSide="T" DisplayAs="Horiz Matrix" LayoutGroup="Default" parm1="5" parm2="6" Controller="Serial_" name="pico" WorldPosX="527.5384" WorldPosY="615.0796" WorldPosZ="0.0000" ScaleX="135.4213" ScaleY="113.0059" ScaleZ="0.1999" RotateX="0.00000000" RotateY="0.00000000" RotateZ="0.00000000" versionNumber="7" StartChannel="91">
+    <model StringType="RGB Nodes" Dir="L" Antialias="1" PixelSize="2" Transparency="0" parm3="1" StartSide="T" DisplayAs="Horiz Matrix" LayoutGroup="Default" name="pico" Controller="Serial_" parm2="160" parm1="32" WorldPosX="5558.1294" WorldPosY="-2209.9661" WorldPosZ="0.0000" ScaleX="124.9645" ScaleY="123.6833" ScaleZ="0.2003" RotateX="0.00000000" RotateY="0.00000000" RotateZ="0.00000000" versionNumber="7" StartChannel="!Serial_:1">
       <ControllerConnection Protocol="Generic Serial"/>
     </model>
   </models>

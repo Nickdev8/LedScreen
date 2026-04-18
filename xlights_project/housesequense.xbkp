@@ -24,7 +24,7 @@
   </ColorPalettes>
   <EffectDB>
     <Effect>E_CHECKBOX_Pinwheel_Rotation=1,E_CHOICE_Pinwheel_3D=3D,E_CHOICE_Pinwheel_Style=New Render Method,E_SLIDER_PinwheelXC=0,E_SLIDER_PinwheelYC=0,E_SLIDER_Pinwheel_ArmSize=323,E_SLIDER_Pinwheel_Arms=10,E_SLIDER_Pinwheel_Offset=80,E_SLIDER_Pinwheel_Speed=10,E_SLIDER_Pinwheel_Thickness=89,E_SLIDER_Pinwheel_Twist=120</Effect>
-    <Effect>E_CHECKBOX_TextNoRepeat=0,E_CHECKBOX_TextToCenter=0,E_CHECKBOX_Text_Color_PerWord=0,E_CHECKBOX_Text_PixelOffsets=0,E_CHOICE_Text_Count=none,E_CHOICE_Text_Dir=right,E_CHOICE_Text_Effect=normal,E_CHOICE_Text_Font=Use OS Fonts,E_FILEPICKERCTRL_Text_File=,E_FONTPICKER_Text_Font=Adwaita Sans 11,E_SLIDER_Text_XEnd=0,E_SLIDER_Text_XStart=0,E_SLIDER_Text_YEnd=0,E_SLIDER_Text_YStart=0,E_TEXTCTRL_Text=RUBEN,E_TEXTCTRL_Text_Speed=4</Effect>
+    <Effect>E_CHECKBOX_TextNoRepeat=0,E_CHECKBOX_TextToCenter=0,E_CHECKBOX_Text_Color_PerWord=0,E_CHECKBOX_Text_PixelOffsets=0,E_CHOICE_Text_Count=none,E_CHOICE_Text_Dir=right,E_CHOICE_Text_Effect=normal,E_CHOICE_Text_Font=Use OS Fonts,E_FONTPICKER_Text_Font=Adwaita Sans 11,E_SLIDER_Text_XEnd=0,E_SLIDER_Text_XStart=0,E_SLIDER_Text_YEnd=0,E_SLIDER_Text_YStart=0,E_TEXTCTRL_Text=RUBEN,E_TEXTCTRL_Text_Speed=11</Effect>
     <Effect>E_CHECKBOX_Pictures_PixelOffsets=0,E_CHECKBOX_Pictures_Shimmer=0,E_CHECKBOX_Pictures_TransparentBlack=0,E_CHECKBOX_Pictures_WrapX=0,E_CHOICE_Pictures_Direction=none,E_CHOICE_Scaling=Scale To Fit,E_FILEPICKER_Pictures_Filename=/home/nick/Documents/projects/LedScreen/xlights_project/house.png,E_SLIDER_PicturesXC=0,E_SLIDER_PicturesYC=0,E_SLIDER_Pictures_EndScale=100,E_SLIDER_Pictures_StartScale=100,E_TEXTCTRL_Pictures_FrameRateAdj=1.0,E_TEXTCTRL_Pictures_Speed=1.0,E_TEXTCTRL_Pictures_TransparentBlack=0</Effect>
     <Effect>E_TEXTCTRL_Eff_On_Start=0,E_TEXTCTRL_On_Transparency=58</Effect>
   </EffectDB>
@@ -41,10 +41,10 @@
     </Element>
     <Element type="model" name="pico">
       <EffectLayer>
-        <Effect ref="0" name="Pinwheel" startTime="850" endTime="4350" palette="0"/>
-        <Effect ref="1" name="Text" id="1" startTime="5700" endTime="10700" palette="1"/>
-        <Effect ref="2" name="Pictures" id="2" startTime="12250" endTime="19050" palette="0"/>
-        <Effect ref="3" name="On" selected="1" id="3" startTime="21000" endTime="22000" palette="1"/>
+        <Effect ref="0" name="Pinwheel" startTime="850" endTime="4450" palette="0"/>
+        <Effect ref="1" name="Text" id="1" startTime="5150" endTime="15000" palette="1"/>
+        <Effect ref="2" name="Pictures" id="2" startTime="15000" endTime="21350" palette="0"/>
+        <Effect ref="3" name="On" selected="1" id="3" startTime="21800" endTime="30000" palette="1"/>
       </EffectLayer>
     </Element>
   </ElementEffects>

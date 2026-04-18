@@ -33,11 +33,37 @@ fp-info-cache
 *.xml
 *.csv
 
-# Archived Backups (KiCad 6.0)
+# Archived Backups
 **/*-backups/*.zip
+xlights_project/Backup/
 
 # Local project settings
 *.kicad_prl
 
-
+# lib
 */*/SdFat/
+
+# Arduino build output
+arduino_firmware/*/build/
+*.bin
+*.elf
+*.uf2
+*.map
+
+# Misc local files
+.tools/
+src/.history/
+xlights_project/xLights_dbgrpt-*.zip
+
+# AI / local coding harness metadata
+.omx/
+.omc/
+.claude/
+.openclaude-profile.json
+.pytest_cache/
+.codex
+final_codex_message.md
+AGENTS.md
+CLAUDE.md
+UX_REDESIGN_*.md
+
