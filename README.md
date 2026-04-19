@@ -112,6 +112,10 @@ Interactive BOM: [cdn.nickesselman.nl](https://cdn.nickesselman.nl/ledpanel/ibom
 ![pcb](docs/images/pcb.png)
 ![schematic](docs/images/scem.png)
 
+## Build Photos
+![LED panels on the bench](docs/images/led-panels-on-bench.png)
+![Controller close-up](docs/images/controller-closeup.png)
+
 ## Acknowledgements
 - Ruben helped me brainstorm the idea and do the math on the power consumption
 - My Dad for helping me figure out the limits of the Pi Pico, and telling stories of previous projects he did as a teenager my age
