@@ -10,12 +10,12 @@ constexpr uint32_t kLedMaPerChannel             = 20;   // WS2812 max mA per col
 
 // ===========================================================================
 // LED output pins  (schematic: T_OUT0..7 → J_LED0..7)
-// Top row    (lane 0-3): outputs 0-3 → GPIOs  0,  1, 26, 28
-// Bottom row (lane 4-7): outputs 4-7 → GPIOs 12, 13, 14, 15
+// Top row    (lane 0-3): outputs 4-7 → GPIOs 12, 13, 14, 15  (physical top)
+// Bottom row (lane 4-7): outputs 0-3 → GPIOs  0,  1, 26, 28  (physical bottom)
 // Each lane drives panels daisy-chained: 2, 3, 2, 3  (left → right)
 // ===========================================================================
 constexpr uint8_t kLiveLaneCount = 8;
-constexpr uint8_t kLiveLanePins[kLiveLaneCount]      = { 0,  1, 26, 28, 12, 13, 14, 15};
+constexpr uint8_t kLiveLanePins[kLiveLaneCount]      = {12, 13, 14, 15,  0,  1, 26, 28};
 constexpr uint8_t kLivePanelsPerLane[kLiveLaneCount] = { 2,  3,  2,  3,  2,  3,  2,  3};
 
 // ===========================================================================

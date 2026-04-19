@@ -1,13 +1,15 @@
-#include <Adafruit_NeoPixel.h>
+#include <Adafruit_NeoPXL8.h>
 #include <Arduino.h>
 #include "Config.h"
 #include "Leds.h"
 
 // ---------------------------------------------------------------------------
-// NeoPixel strips
+// NeoPXL8 — all 8 lanes fire simultaneously via RP2040 PIO + DMA.
+// All lanes must be the same length; pad to the longest (3 panels = 768 LEDs).
+// Lanes with only 2 panels (512 LEDs) have 256 unused slots at the end — harmless.
 // ---------------------------------------------------------------------------
 
-static_assert(kLiveLaneCount == 8, "Update strip declarations for non-8-lane configs");
+static_assert(kLiveLaneCount == 8, "NeoPXL8 requires exactly 8 lanes");
 static_assert(
   (kLivePanelsPerLane[0] + kLivePanelsPerLane[1] +
    kLivePanelsPerLane[2] + kLivePanelsPerLane[3] +
@@ -16,30 +18,24 @@ static_assert(
   "kLivePanelsPerLane must sum to kLivePanelCount"
 );
 
-constexpr uint16_t kLane0Leds = static_cast<uint16_t>(kLivePanelsPerLane[0]) * kLiveLedsPerPanel;
-constexpr uint16_t kLane1Leds = static_cast<uint16_t>(kLivePanelsPerLane[1]) * kLiveLedsPerPanel;
-constexpr uint16_t kLane2Leds = static_cast<uint16_t>(kLivePanelsPerLane[2]) * kLiveLedsPerPanel;
-constexpr uint16_t kLane3Leds = static_cast<uint16_t>(kLivePanelsPerLane[3]) * kLiveLedsPerPanel;
-constexpr uint16_t kLane4Leds = static_cast<uint16_t>(kLivePanelsPerLane[4]) * kLiveLedsPerPanel;
-constexpr uint16_t kLane5Leds = static_cast<uint16_t>(kLivePanelsPerLane[5]) * kLiveLedsPerPanel;
-constexpr uint16_t kLane6Leds = static_cast<uint16_t>(kLivePanelsPerLane[6]) * kLiveLedsPerPanel;
-constexpr uint16_t kLane7Leds = static_cast<uint16_t>(kLivePanelsPerLane[7]) * kLiveLedsPerPanel;
+constexpr uint16_t kLedsPerLane = 3U * kLiveLedsPerPanel;  // 768 (max panels per lane × 256)
 
-static Adafruit_NeoPixel strip0(kLane0Leds, kLiveLanePins[0], NEO_GRB + NEO_KHZ800);
-static Adafruit_NeoPixel strip1(kLane1Leds, kLiveLanePins[1], NEO_GRB + NEO_KHZ800);
-static Adafruit_NeoPixel strip2(kLane2Leds, kLiveLanePins[2], NEO_GRB + NEO_KHZ800);
-static Adafruit_NeoPixel strip3(kLane3Leds, kLiveLanePins[3], NEO_GRB + NEO_KHZ800);
-static Adafruit_NeoPixel strip4(kLane4Leds, kLiveLanePins[4], NEO_GRB + NEO_KHZ800);
-static Adafruit_NeoPixel strip5(kLane5Leds, kLiveLanePins[5], NEO_GRB + NEO_KHZ800);
-static Adafruit_NeoPixel strip6(kLane6Leds, kLiveLanePins[6], NEO_GRB + NEO_KHZ800);
-static Adafruit_NeoPixel strip7(kLane7Leds, kLiveLanePins[7], NEO_GRB + NEO_KHZ800);
-static Adafruit_NeoPixel* gStrips[kLiveLaneCount] = {
-  &strip0, &strip1, &strip2, &strip3,
-  &strip4, &strip5, &strip6, &strip7,
+static int8_t gPins[kLiveLaneCount] = {
+  (int8_t)kLiveLanePins[0], (int8_t)kLiveLanePins[1],
+  (int8_t)kLiveLanePins[2], (int8_t)kLiveLanePins[3],
+  (int8_t)kLiveLanePins[4], (int8_t)kLiveLanePins[5],
+  (int8_t)kLiveLanePins[6], (int8_t)kLiveLanePins[7],
 };
 
+static Adafruit_NeoPXL8 gLeds(kLedsPerLane, gPins, NEO_GRB);
+
+// NeoPXL8 pixel addressing: pixel p on lane l → global index = p * 8 + l
+static inline uint32_t px(uint8_t lane, uint16_t index) {
+  return static_cast<uint32_t>(index) * kLiveLaneCount + lane;
+}
+
 // ---------------------------------------------------------------------------
-// Frame buffer (written by SD/animation layer, read by render)
+// Frame buffer (filled by SD / USB layer, consumed by renderFrameBuffer)
 // ---------------------------------------------------------------------------
 
 uint8_t gFrameBuffer[kLiveFrameBytes];
@@ -71,43 +67,44 @@ static PhysicalPixel mapLogicalToPhysical(uint16_t idx) {
     pil -= kLivePanelsPerLane[lane++];
   if (lane >= kLiveLaneCount) return {0, 0};
 
-  uint16_t px = x % kLivePanelWidth;
-  uint16_t py = y % kLivePanelHeight;
+  uint16_t panelX = x % kLivePanelWidth;
+  uint16_t panelY = y % kLivePanelHeight;
 
-  if      (kPanelRotationQuarterTurnsCCW == 1) { uint16_t t = px; px = py;               py = kLivePanelWidth  - 1U - t; }
-  else if (kPanelRotationQuarterTurnsCCW == 2) { px = kLivePanelWidth  - 1U - px;        py = kLivePanelHeight - 1U - py; }
-  else if (kPanelRotationQuarterTurnsCCW == 3) { uint16_t t = py; py = px;               px = kLivePanelHeight - 1U - t; }
+  if      (kPanelRotationQuarterTurnsCCW == 1) { uint16_t t = panelX; panelX = panelY;               panelY = kLivePanelWidth  - 1U - t; }
+  else if (kPanelRotationQuarterTurnsCCW == 2) { panelX = kLivePanelWidth  - 1U - panelX;            panelY = kLivePanelHeight - 1U - panelY; }
+  else if (kPanelRotationQuarterTurnsCCW == 3) { uint16_t t = panelY; panelY = panelX;               panelX = kLivePanelHeight - 1U - t; }
 
   if (kMatrixSerpentine) {
-    const bool odd = (py & 1U) != 0;
-    if (kMatrixReverseOddRows ? odd : !odd) px = kLivePanelWidth - 1U - px;
+    const bool odd = (panelY & 1U) != 0;
+    if (kMatrixReverseOddRows ? odd : !odd) panelX = kLivePanelWidth - 1U - panelX;
   }
 
-  return { lane, static_cast<uint16_t>(pil * kLiveLedsPerPanel + py * kLivePanelWidth + px) };
+  return { lane, static_cast<uint16_t>(pil * kLiveLedsPerPanel + panelY * kLivePanelWidth + panelX) };
 }
 
 // ---------------------------------------------------------------------------
-// Render + current limiting
+// Render — single show() fires all 8 lanes at the same time
 // ---------------------------------------------------------------------------
 
 void renderFrameBuffer() {
   for (uint16_t i = 0; i < kLiveLedCount; i++) {
     const PhysicalPixel p   = mapLogicalToPhysical(i);
     const size_t        off = static_cast<size_t>(i) * 3U;
-    gStrips[p.lane]->setPixelColor(p.index,
+    gLeds.setPixelColor(px(p.lane, p.index),
       gFrameBuffer[off], gFrameBuffer[off + 1], gFrameBuffer[off + 2]);
   }
-  for (uint8_t l = 0; l < kLiveLaneCount; l++) gStrips[l]->show();
+  gLeds.show();  // all 8 lanes simultaneously — perfect sync
 }
+
+// ---------------------------------------------------------------------------
+// Current limiting
+// ---------------------------------------------------------------------------
 
 void applyCurrentLimit() {
   uint32_t total = 0;
   for (size_t i = 0; i < kLiveFrameBytes; i++) total += gFrameBuffer[i];
-  // Estimate actual mA: raw sum → normalize to per-channel max → apply hardware brightness
-  // Without the brightness factor the limiter over-estimates by 100/kGeneralMaxBrightnessPercent
-  // and kills all content except the sparsest pixels.
   const uint32_t estimatedMa = (total / 255U) * kLedMaPerChannel
-                                * kGeneralMaxBrightnessPercent / 100U;
+                               * kGeneralMaxBrightnessPercent / 100U;
   if (estimatedMa > kMaxCurrentMa) {
     const uint32_t scale = (kMaxCurrentMa * 255U) / estimatedMa;
     for (size_t i = 0; i < kLiveFrameBytes; i++)
@@ -120,44 +117,43 @@ void applyCurrentLimit() {
 // ---------------------------------------------------------------------------
 
 void initLeds() {
-  for (uint8_t l = 0; l < kLiveLaneCount; l++) {
-    gStrips[l]->begin();
-    gStrips[l]->clear();
-    gStrips[l]->setBrightness((kGeneralMaxBrightnessPercent * 255U) / 100U);
-    gStrips[l]->show();
+  if (!gLeds.begin()) {
+    Serial.println(F("NeoPXL8 init FAIL — check library install and pin config"));
   }
-  // Boot indicator: one green pixel per panel for 1 s
-  for (uint8_t l = 0; l < kLiveLaneCount; l++) {
+  gLeds.setBrightness((kGeneralMaxBrightnessPercent * 255U) / 100U);
+  gLeds.clear();
+  gLeds.show();
+
+  // Boot indicator: first pixel of every panel, green, for 1 s
+  for (uint8_t l = 0; l < kLiveLaneCount; l++)
     for (uint8_t p = 0; p < kLivePanelsPerLane[l]; p++)
-      gStrips[l]->setPixelColor(static_cast<uint16_t>(p) * kLiveLedsPerPanel, 0, 40, 0);
-    gStrips[l]->show();
-  }
+      gLeds.setPixelColor(px(l, static_cast<uint16_t>(p) * kLiveLedsPerPanel), 0, 40, 0);
+  gLeds.show();
   delay(1000);
-  for (uint8_t l = 0; l < kLiveLaneCount; l++) { gStrips[l]->clear(); gStrips[l]->show(); }
+  gLeds.clear();
+  gLeds.show();
 }
 
 // ---------------------------------------------------------------------------
-// Idle blink  (first LED of every panel blinks red when no SD / no animation)
+// Idle blink — first LED of every panel blinks red when no SD / no animation
 // ---------------------------------------------------------------------------
 
 bool     gIdleBlinkActive = false;
-static uint32_t gNextBlinkMs  = 0;
-static bool     gBlinkOn      = false;
+static uint32_t gNextBlinkMs = 0;
+static bool     gBlinkOn     = false;
 constexpr uint32_t kBlinkIntervalMs = 500;
 
 static void setPanelLeds(uint8_t r, uint8_t g, uint8_t b) {
-  for (uint8_t l = 0; l < kLiveLaneCount; l++) {
+  gLeds.clear();
+  for (uint8_t l = 0; l < kLiveLaneCount; l++)
     for (uint8_t p = 0; p < kLivePanelsPerLane[l]; p++)
-      gStrips[l]->setPixelColor(static_cast<uint16_t>(p) * kLiveLedsPerPanel, r, g, b);
-    gStrips[l]->show();
-  }
+      gLeds.setPixelColor(px(l, static_cast<uint16_t>(p) * kLiveLedsPerPanel), r, g, b);
+  gLeds.show();
 }
 
 void resetIdleBlink() {
-  for (uint8_t l = 0; l < kLiveLaneCount; l++) { gStrips[l]->clear(); gStrips[l]->show(); }
-  gBlinkOn = false;
-  gNextBlinkMs = millis();
-  gIdleBlinkActive = true;
+  gLeds.clear(); gLeds.show();
+  gBlinkOn = false; gNextBlinkMs = millis(); gIdleBlinkActive = true;
 }
 
 void updateIdleBlink() {
