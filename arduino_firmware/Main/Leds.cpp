@@ -1,165 +1,225 @@
-#include <Adafruit_NeoPXL8.h>
 #include <Arduino.h>
+#include "hardware/pio.h"
+#include "hardware/dma.h"
 #include "Config.h"
 #include "Leds.h"
 
-// ---------------------------------------------------------------------------
-// NeoPXL8 — all 8 lanes fire simultaneously via RP2040 PIO + DMA.
-// All lanes must be the same length; pad to the longest (3 panels = 768 LEDs).
-// Lanes with only 2 panels (512 LEDs) have 256 unused slots at the end — harmless.
-// ---------------------------------------------------------------------------
+static_assert(kLiveLaneCount == 8, "This driver requires exactly 8 lanes (4 per PIO block)");
 
-static_assert(kLiveLaneCount == 8, "NeoPXL8 requires exactly 8 lanes");
-static_assert(
-  (kLivePanelsPerLane[0] + kLivePanelsPerLane[1] +
-   kLivePanelsPerLane[2] + kLivePanelsPerLane[3] +
-   kLivePanelsPerLane[4] + kLivePanelsPerLane[5] +
-   kLivePanelsPerLane[6] + kLivePanelsPerLane[7]) == kLivePanelCount,
-  "kLivePanelsPerLane must sum to kLivePanelCount"
-);
-
-constexpr uint16_t kLedsPerLane = 3U * kLiveLedsPerPanel;  // 768 (max panels per lane × 256)
-
-static int8_t gPins[kLiveLaneCount] = {
-  (int8_t)kLiveLanePins[0], (int8_t)kLiveLanePins[1],
-  (int8_t)kLiveLanePins[2], (int8_t)kLiveLanePins[3],
-  (int8_t)kLiveLanePins[4], (int8_t)kLiveLanePins[5],
-  (int8_t)kLiveLanePins[6], (int8_t)kLiveLanePins[7],
+// WS2812 PIO program — side_set=1, T1=2 T2=5 T3=3
+// Run at clkdiv=15.625 → 8 MHz PIO → 800 kHz NeoPixel.
+// Pre-assembled; no pioasm tooling required.
+static const uint16_t kWs2812Insns[] = {
+    0x6221,  // out x, 1       side 0 [2]
+    0x1123,  // jmp !x, 3      side 1 [1]
+    0x1400,  // jmp 0          side 1 [4]
+    0xa442,  // nop            side 0 [4]
+};
+static const pio_program_t kWs2812Prog = {
+    .instructions = kWs2812Insns,
+    .length       = 4,
+    .origin       = -1,
 };
 
-static Adafruit_NeoPXL8 gLeds(kLedsPerLane, gPins, NEO_GRB);
+constexpr uint16_t kLedsPerLane = 3U * kLiveLedsPerPanel;  // 768
 
-// NeoPXL8 pixel addressing: pixel p on lane l → global index = p * 8 + l
-static inline uint32_t px(uint8_t lane, uint16_t index) {
-  return static_cast<uint32_t>(index) * kLiveLaneCount + lane;
-}
-
-// ---------------------------------------------------------------------------
-// Frame buffer (filled by SD / USB layer, consumed by renderFrameBuffer)
-// ---------------------------------------------------------------------------
+// Lanes 0-3 → PIO0 SM 0-3 | Lanes 4-7 → PIO1 SM 0-3
+static uint     gProgOff[2];
+static uint     gSm[kLiveLaneCount];
+static PIO      gPioDev[kLiveLaneCount];
+static int      gDmaCh[kLiveLaneCount];
+// GRB packed as uint32: G<<24 | R<<16 | B<<8 (top 24 bits sent MSB-first)
+static uint32_t gLaneBuf[kLiveLaneCount][kLedsPerLane];
 
 uint8_t gFrameBuffer[kLiveFrameBytes];
+bool    gIdleBlinkActive = false;
+
+static uint32_t gLastShowUs = 0;
 
 // ---------------------------------------------------------------------------
 // Pixel mapping
 // ---------------------------------------------------------------------------
-
 struct PhysicalPixel { uint8_t lane; uint16_t index; };
 
 static PhysicalPixel mapLogicalToPhysical(uint16_t idx) {
-  uint16_t x, y;
-  if (kLiveInputColumnMajor) {
-    x = idx / kLiveMatrixHeight;
-    y = idx % kLiveMatrixHeight;
-  } else {
-    x = idx % kLiveMatrixWidth;
-    y = idx / kLiveMatrixWidth;
-  }
-  if (kMatrixFlipX) x = kLiveMatrixWidth  - 1U - x;
-  if (kMatrixFlipY) y = kLiveMatrixHeight - 1U - y;
+    uint16_t x, y;
+    if (kLiveInputColumnMajor) { x = idx / kLiveMatrixHeight; y = idx % kLiveMatrixHeight; }
+    else                       { x = idx % kLiveMatrixWidth;  y = idx / kLiveMatrixWidth; }
+    if (kMatrixFlipX) x = kLiveMatrixWidth  - 1U - x;
+    if (kMatrixFlipY) y = kLiveMatrixHeight - 1U - y;
 
-  const uint16_t panelsWide = kLiveMatrixWidth / kLivePanelWidth;
-  const uint16_t panelIndex = (y / kLivePanelHeight) * panelsWide + (x / kLivePanelWidth);
+    const uint16_t panelsWide = kLiveMatrixWidth / kLivePanelWidth;
+    const uint16_t panelIndex = (y / kLivePanelHeight) * panelsWide + (x / kLivePanelWidth);
 
-  uint8_t pil  = static_cast<uint8_t>(panelIndex);
-  uint8_t lane = 0;
-  while (lane < kLiveLaneCount && pil >= kLivePanelsPerLane[lane])
-    pil -= kLivePanelsPerLane[lane++];
-  if (lane >= kLiveLaneCount) return {0, 0};
+    uint8_t pil = static_cast<uint8_t>(panelIndex);
+    uint8_t lane = 0;
+    while (lane < kLiveLaneCount && pil >= kLivePanelsPerLane[lane])
+        pil -= kLivePanelsPerLane[lane++];
+    if (lane >= kLiveLaneCount) return {0, 0};
 
-  uint16_t panelX = x % kLivePanelWidth;
-  uint16_t panelY = y % kLivePanelHeight;
+    uint16_t px = x % kLivePanelWidth;
+    uint16_t py = y % kLivePanelHeight;
 
-  if      (kPanelRotationQuarterTurnsCCW == 1) { uint16_t t = panelX; panelX = panelY;               panelY = kLivePanelWidth  - 1U - t; }
-  else if (kPanelRotationQuarterTurnsCCW == 2) { panelX = kLivePanelWidth  - 1U - panelX;            panelY = kLivePanelHeight - 1U - panelY; }
-  else if (kPanelRotationQuarterTurnsCCW == 3) { uint16_t t = panelY; panelY = panelX;               panelX = kLivePanelHeight - 1U - t; }
+    if      (kPanelRotationQuarterTurnsCCW == 1) { uint16_t t = px; px = py; py = kLivePanelWidth  - 1U - t; }
+    else if (kPanelRotationQuarterTurnsCCW == 2) { px = kLivePanelWidth  - 1U - px; py = kLivePanelHeight - 1U - py; }
+    else if (kPanelRotationQuarterTurnsCCW == 3) { uint16_t t = py; py = px; px = kLivePanelHeight - 1U - t; }
 
-  if (kMatrixSerpentine) {
-    const bool odd = (panelY & 1U) != 0;
-    if (kMatrixReverseOddRows ? odd : !odd) panelX = kLivePanelWidth - 1U - panelX;
-  }
+    if (kMatrixSerpentine) {
+        const bool odd = (py & 1U) != 0;
+        if (kMatrixReverseOddRows ? odd : !odd) px = kLivePanelWidth - 1U - px;
+    }
 
-  return { lane, static_cast<uint16_t>(pil * kLiveLedsPerPanel + panelY * kLivePanelWidth + panelX) };
+    return { lane, static_cast<uint16_t>(pil * kLiveLedsPerPanel + py * kLivePanelWidth + px) };
 }
 
 // ---------------------------------------------------------------------------
-// Render — single show() fires all 8 lanes at the same time
+// PIO+DMA show — all 8 lanes fire simultaneously
 // ---------------------------------------------------------------------------
+static void showLaneBufs() {
+    // Enforce >50 µs reset pulse between frames
+    const uint32_t elapsed = (uint32_t)(micros() - gLastShowUs);
+    if (elapsed < 50) delayMicroseconds(50 - elapsed);
+
+    // Disable SMs and reset PC to program start
+    pio_set_sm_mask_enabled(pio0, 0xF, false);
+    pio_set_sm_mask_enabled(pio1, 0xF, false);
+    for (uint8_t l = 0; l < kLiveLaneCount; l++) {
+        pio_sm_clear_fifos(gPioDev[l], gSm[l]);
+        pio_sm_exec(gPioDev[l], gSm[l], pio_encode_jmp(gProgOff[l < 4 ? 0 : 1]));
+    }
+
+    // Re-arm all DMA channels and trigger simultaneously
+    uint32_t dmaMask = 0;
+    for (uint8_t l = 0; l < kLiveLaneCount; l++) {
+        dma_channel_set_read_addr(gDmaCh[l], gLaneBuf[l], false);
+        dma_channel_set_trans_count(gDmaCh[l], kLedsPerLane, false);
+        dmaMask |= (1u << gDmaCh[l]);
+    }
+    dma_start_channel_mask(dmaMask);
+
+    // Start all SMs simultaneously (one write per PIO block)
+    pio_enable_sm_mask_in_sync(pio0, 0xF);
+    pio_enable_sm_mask_in_sync(pio1, 0xF);
+
+    // Wait for all transfers to complete
+    for (uint8_t l = 0; l < kLiveLaneCount; l++)
+        dma_channel_wait_for_finish_blocking(gDmaCh[l]);
+
+    gLastShowUs = micros();
+}
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+void applyCurrentLimit() {
+    uint32_t total = 0;
+    for (size_t i = 0; i < kLiveFrameBytes; i++) total += gFrameBuffer[i];
+    const uint32_t estimatedMa = (total / 255U) * kLedMaPerChannel
+                                 * kGeneralMaxBrightnessPercent / 100U;
+    if (estimatedMa > kMaxCurrentMa) {
+        const uint32_t scale = (kMaxCurrentMa * 255U) / estimatedMa;
+        for (size_t i = 0; i < kLiveFrameBytes; i++)
+            gFrameBuffer[i] = static_cast<uint8_t>((gFrameBuffer[i] * scale) >> 8);
+    }
+}
 
 void renderFrameBuffer() {
-  for (uint16_t i = 0; i < kLiveLedCount; i++) {
-    const PhysicalPixel p   = mapLogicalToPhysical(i);
-    const size_t        off = static_cast<size_t>(i) * 3U;
-    gLeds.setPixelColor(px(p.lane, p.index),
-      gFrameBuffer[off], gFrameBuffer[off + 1], gFrameBuffer[off + 2]);
-  }
-  gLeds.show();  // all 8 lanes simultaneously — perfect sync
+    // Match setBrightness() behaviour from the old NeoPixel driver
+    constexpr uint32_t kBright = (kGeneralMaxBrightnessPercent * 255U) / 100U;  // e.g. 12 at 5%
+    for (uint16_t i = 0; i < kLiveLedCount; i++) {
+        const PhysicalPixel p   = mapLogicalToPhysical(i);
+        const size_t        off = static_cast<size_t>(i) * 3U;
+        gLaneBuf[p.lane][p.index] =
+            (((uint32_t)gFrameBuffer[off + 1] * kBright >> 8) << 24) |  // G
+            (((uint32_t)gFrameBuffer[off    ] * kBright >> 8) << 16) |  // R
+            (((uint32_t)gFrameBuffer[off + 2] * kBright >> 8) <<  8);   // B
+    }
+    showLaneBufs();
 }
-
-// ---------------------------------------------------------------------------
-// Current limiting
-// ---------------------------------------------------------------------------
-
-void applyCurrentLimit() {
-  uint32_t total = 0;
-  for (size_t i = 0; i < kLiveFrameBytes; i++) total += gFrameBuffer[i];
-  const uint32_t estimatedMa = (total / 255U) * kLedMaPerChannel
-                               * kGeneralMaxBrightnessPercent / 100U;
-  if (estimatedMa > kMaxCurrentMa) {
-    const uint32_t scale = (kMaxCurrentMa * 255U) / estimatedMa;
-    for (size_t i = 0; i < kLiveFrameBytes; i++)
-      gFrameBuffer[i] = static_cast<uint8_t>((gFrameBuffer[i] * scale) >> 8);
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Init
-// ---------------------------------------------------------------------------
 
 void initLeds() {
-  if (!gLeds.begin()) {
-    Serial.println(F("NeoPXL8 init FAIL — check library install and pin config"));
-  }
-  gLeds.setBrightness((kGeneralMaxBrightnessPercent * 255U) / 100U);
-  gLeds.clear();
-  gLeds.show();
+    if (!pio_can_add_program(pio0, &kWs2812Prog) || !pio_can_add_program(pio1, &kWs2812Prog)) {
+        Serial.println(F("PIO: no instruction space")); return;
+    }
+    gProgOff[0] = pio_add_program(pio0, &kWs2812Prog);
+    gProgOff[1] = pio_add_program(pio1, &kWs2812Prog);
 
-  // Boot indicator: first pixel of every panel, green, for 1 s
-  for (uint8_t l = 0; l < kLiveLaneCount; l++)
-    for (uint8_t p = 0; p < kLivePanelsPerLane[l]; p++)
-      gLeds.setPixelColor(px(l, static_cast<uint16_t>(p) * kLiveLedsPerPanel), 0, 40, 0);
-  gLeds.show();
-  delay(1000);
-  gLeds.clear();
-  gLeds.show();
+    // Claim SMs 0-3 in each PIO block (panics if already taken)
+    pio_claim_sm_mask(pio0, 0xF);
+    pio_claim_sm_mask(pio1, 0xF);
+
+    for (uint8_t l = 0; l < kLiveLaneCount; l++) {
+        gPioDev[l] = (l < 4) ? pio0 : pio1;
+        gSm[l]     = l & 3u;
+        const uint8_t pin    = kLiveLanePins[l];
+        const uint   offset  = gProgOff[l < 4 ? 0 : 1];
+
+        pio_gpio_init(gPioDev[l], pin);
+        pio_sm_set_consecutive_pindirs(gPioDev[l], gSm[l], pin, 1, true);
+
+        pio_sm_config c = pio_get_default_sm_config();
+        sm_config_set_sideset(&c, 1, false, false);
+        sm_config_set_sideset_pins(&c, pin);
+        sm_config_set_out_shift(&c, false, true, 24);   // shift left, autopull at 24 bits
+        sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_TX);  // 8-entry TX FIFO
+        sm_config_set_wrap(&c, offset, offset + 3);
+        sm_config_set_clkdiv(&c, (float)clock_get_hz(clk_sys) / (10.0f * 800000.0f));
+        pio_sm_init(gPioDev[l], gSm[l], offset, &c);
+    }
+
+    for (uint8_t l = 0; l < kLiveLaneCount; l++) {
+        gDmaCh[l] = dma_claim_unused_channel(false);
+        if (gDmaCh[l] < 0) {
+            Serial.print(F("DMA: no channel for lane ")); Serial.println(l); return;
+        }
+        dma_channel_config dc = dma_channel_get_default_config(gDmaCh[l]);
+        channel_config_set_transfer_data_size(&dc, DMA_SIZE_32);
+        channel_config_set_read_increment(&dc, true);
+        channel_config_set_write_increment(&dc, false);
+        channel_config_set_dreq(&dc, pio_get_dreq(gPioDev[l], gSm[l], true));
+        dma_channel_configure(gDmaCh[l], &dc,
+            &gPioDev[l]->txf[gSm[l]], gLaneBuf[l], kLedsPerLane, false);
+    }
+
+    Serial.println(F("PIO+DMA NeoPixel init OK"));
+
+    // Boot indicator: first pixel of every panel, green for 1 s
+    memset(gLaneBuf, 0, sizeof(gLaneBuf));
+    for (uint8_t l = 0; l < kLiveLaneCount; l++)
+        for (uint8_t p = 0; p < kLivePanelsPerLane[l]; p++)
+            gLaneBuf[l][(uint16_t)p * kLiveLedsPerPanel] = (40u << 24);
+    showLaneBufs();
+    delay(1000);
+    memset(gLaneBuf, 0, sizeof(gLaneBuf));
+    showLaneBufs();
 }
 
 // ---------------------------------------------------------------------------
-// Idle blink — first LED of every panel blinks red when no SD / no animation
+// Idle blink
 // ---------------------------------------------------------------------------
-
-bool     gIdleBlinkActive = false;
-static uint32_t gNextBlinkMs = 0;
-static bool     gBlinkOn     = false;
+static uint32_t gNextBlinkMs  = 0;
+static bool     gBlinkOn      = false;
 constexpr uint32_t kBlinkIntervalMs = 500;
 
 static void setPanelLeds(uint8_t r, uint8_t g, uint8_t b) {
-  gLeds.clear();
-  for (uint8_t l = 0; l < kLiveLaneCount; l++)
-    for (uint8_t p = 0; p < kLivePanelsPerLane[l]; p++)
-      gLeds.setPixelColor(px(l, static_cast<uint16_t>(p) * kLiveLedsPerPanel), r, g, b);
-  gLeds.show();
+    memset(gLaneBuf, 0, sizeof(gLaneBuf));
+    const uint32_t packed = ((uint32_t)g << 24) | ((uint32_t)r << 16) | ((uint32_t)b << 8);
+    for (uint8_t l = 0; l < kLiveLaneCount; l++)
+        for (uint8_t p = 0; p < kLivePanelsPerLane[l]; p++)
+            gLaneBuf[l][(uint16_t)p * kLiveLedsPerPanel] = packed;
+    showLaneBufs();
 }
 
 void resetIdleBlink() {
-  gLeds.clear(); gLeds.show();
-  gBlinkOn = false; gNextBlinkMs = millis(); gIdleBlinkActive = true;
+    memset(gLaneBuf, 0, sizeof(gLaneBuf));
+    showLaneBufs();
+    gBlinkOn = false; gNextBlinkMs = millis(); gIdleBlinkActive = true;
 }
 
 void updateIdleBlink() {
-  const uint32_t now = millis();
-  if (static_cast<int32_t>(now - gNextBlinkMs) < 0) return;
-  gBlinkOn = !gBlinkOn;
-  setPanelLeds(gBlinkOn ? 40 : 0, 0, 0);
-  gNextBlinkMs = now + kBlinkIntervalMs;
+    const uint32_t now = millis();
+    if ((int32_t)(now - gNextBlinkMs) < 0) return;
+    gBlinkOn = !gBlinkOn;
+    setPanelLeds(gBlinkOn ? 40 : 0, 0, 0);
+    gNextBlinkMs = now + kBlinkIntervalMs;
 }
