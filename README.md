@@ -107,10 +107,12 @@ Use an external 5V PSU sized for the actual panel count and brightness.
 Interactive BOM: [cdn.nickesselman.nl](https://cdn.nickesselman.nl/ledpanel/ibom.html)
 
 ## Project Images
-![jlcpcb orders](docs/images/jlcMyOrders.png)
-![gerbers](docs/images/gerbers.png)
-![pcb](docs/images/pcb.png)
-![schematic](docs/images/scem.png)
+<p>
+  <img src="docs/images/jlcMyOrders.png" alt="jlcpcb orders" width="24%">
+  <img src="docs/images/gerbers.png" alt="gerbers" width="24%">
+  <img src="docs/images/pcb.png" alt="pcb" width="24%">
+  <img src="docs/images/scem.png" alt="schematic" width="24%">
+</p>
 
 ## Build Photos
 ![LED panels on the bench](docs/images/led-panels-on-bench.png)
