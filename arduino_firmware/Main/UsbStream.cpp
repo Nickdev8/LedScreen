@@ -1,8 +1,3 @@
-// USB serial streaming — receives raw RGB frames from xLights over USB CDC.
-// Protocol: host sends kLiveFrameBytes (7680) bytes per frame, back-to-back.
-// No framing or header — just raw channel data at kLiveSerialBaud.
-// Priority: when active, SD animation is suppressed (checked via usbStreamActive()).
-
 #include <Arduino.h>
 #include "Config.h"
 #include "UsbStream.h"
@@ -14,6 +9,7 @@ static uint32_t gLastActivityMs = 0;
 constexpr uint32_t kUsbActiveTimeoutMs = 500;
 
 void serviceUsbStream() {
+  // The stream is raw RGB bytes with no delimiter, so a stalled partial frame must be dropped.
   while (Serial.available()) {
     const int b = Serial.read();
     if (b < 0) break;
@@ -26,7 +22,6 @@ void serviceUsbStream() {
       gFrameIndex = 0;
     }
   }
-  // Reset partial frame if no data arrives within the frame timeout
   if (gFrameIndex > 0 && (millis() - gLastActivityMs) > kLiveFrameTimeoutMs)
     gFrameIndex = 0;
 }

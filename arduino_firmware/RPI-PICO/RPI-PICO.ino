@@ -2,10 +2,6 @@
 #include <Arduino.h>
 #include "Config.h"
 
-// ---------------------------------------------------------------------------
-// NeoPixel strips — one per lane
-// ---------------------------------------------------------------------------
-
 struct PhysicalPixel {
   uint8_t lane;
   uint16_t index;
@@ -30,19 +26,12 @@ Adafruit_NeoPixel* gStrips[kLiveLaneCount] = {
   &strip0, &strip1, &strip2, &strip3,
 };
 
-// ---------------------------------------------------------------------------
-// Frame buffer
-// ---------------------------------------------------------------------------
-
 uint8_t  gFrameBuffer[kLiveFrameBytes];
 size_t   gFrameIndex = 0;
 uint32_t gLastSerialActivityMs = 0;
 
 constexpr uint32_t kSerialActiveTimeoutMs = 500;
 
-// ---------------------------------------------------------------------------
-// Logical → physical pixel mapping
-// ---------------------------------------------------------------------------
 
 PhysicalPixel mapLogicalToPhysical(uint16_t logicalIndex) {
   uint16_t x = 0;
@@ -99,9 +88,6 @@ PhysicalPixel mapLogicalToPhysical(uint16_t logicalIndex) {
   return {lane, laneIndex};
 }
 
-// ---------------------------------------------------------------------------
-// Render
-// ---------------------------------------------------------------------------
 
 void renderFrameBuffer() {
   for (uint16_t logicalIndex = 0; logicalIndex < kLiveLedCount; logicalIndex++) {
@@ -119,9 +105,6 @@ void renderFrameBuffer() {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Serial streaming (xLights)
-// ---------------------------------------------------------------------------
 
 void serviceSerialStream() {
   while (Serial.available()) {
@@ -143,10 +126,6 @@ bool serialPlaybackActive() {
   return (millis() - gLastSerialActivityMs) <= kSerialActiveTimeoutMs;
 }
 
-// ---------------------------------------------------------------------------
-// Scanner test — 1 LED at a time, left→right, row by row.
-// Runs when no serial stream is active.
-// ---------------------------------------------------------------------------
 
 static uint16_t gScannerPixel     = 0;
 static uint16_t gScannerPrevPixel = 0xFFFFU;
@@ -189,9 +168,6 @@ static void updateScannerTest() {
   gNextScanMs       = now + kScanStepMs;
 }
 
-// ---------------------------------------------------------------------------
-// Arduino entry points
-// ---------------------------------------------------------------------------
 
 void setup() {
   Serial.begin(kLiveSerialBaud);
@@ -204,7 +180,6 @@ void setup() {
     gStrips[lane]->show();
   }
 
-  // Boot indicator: light pixel 0 of every panel for 1 second
   for (uint8_t lane = 0; lane < kLiveLaneCount; lane++) {
     for (uint8_t p = 0; p < kLivePanelsPerLane[lane]; p++)
       gStrips[lane]->setPixelColor(static_cast<uint16_t>(p) * kLiveLedsPerPanel, 0, 40, 0);

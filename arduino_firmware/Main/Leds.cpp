@@ -6,14 +6,12 @@
 
 static_assert(kLiveLaneCount == 8, "This driver requires exactly 8 lanes (4 per PIO block)");
 
-// WS2812 PIO program — side_set=1, T1=2 T2=5 T3=3
-// Run at clkdiv=15.625 → 8 MHz PIO → 800 kHz NeoPixel.
-// Pre-assembled; no pioasm tooling required.
+// Keep the program pre-assembled so the firmware does not depend on pioasm at build time.
 static const uint16_t kWs2812Insns[] = {
-    0x6221,  // out x, 1       side 0 [2]
-    0x1123,  // jmp !x, 3      side 1 [1]
-    0x1400,  // jmp 0          side 1 [4]
-    0xa442,  // nop            side 0 [4]
+    0x6221,
+    0x1123,
+    0x1400,
+    0xa442,
 };
 static const pio_program_t kWs2812Prog = {
     .instructions = kWs2812Insns,
@@ -21,14 +19,13 @@ static const pio_program_t kWs2812Prog = {
     .origin       = -1,
 };
 
-constexpr uint16_t kLedsPerLane = 3U * kLiveLedsPerPanel;  // 768
+constexpr uint16_t kLedsPerLane = 3U * kLiveLedsPerPanel;
 
-// Lanes 0-3 → PIO0 SM 0-3 | Lanes 4-7 → PIO1 SM 0-3
 static uint     gProgOff[2];
 static uint     gSm[kLiveLaneCount];
 static PIO      gPioDev[kLiveLaneCount];
 static int      gDmaCh[kLiveLaneCount];
-// GRB packed as uint32: G<<24 | R<<16 | B<<8 (top 24 bits sent MSB-first)
+// Pack GRB into the upper 24 bits so the PIO shift register emits it MSB-first.
 static uint32_t gLaneBuf[kLiveLaneCount][kLedsPerLane];
 
 uint8_t gFrameBuffer[kLiveFrameBytes];
@@ -36,9 +33,6 @@ bool    gIdleBlinkActive = false;
 
 static uint32_t gLastShowUs = 0;
 
-// ---------------------------------------------------------------------------
-// Pixel mapping
-// ---------------------------------------------------------------------------
 struct PhysicalPixel { uint8_t lane; uint16_t index; };
 
 static PhysicalPixel mapLogicalToPhysical(uint16_t idx) {
@@ -72,15 +66,11 @@ static PhysicalPixel mapLogicalToPhysical(uint16_t idx) {
     return { lane, static_cast<uint16_t>(pil * kLiveLedsPerPanel + py * kLivePanelWidth + px) };
 }
 
-// ---------------------------------------------------------------------------
-// PIO+DMA show — all 8 lanes fire simultaneously
-// ---------------------------------------------------------------------------
 static void showLaneBufs() {
-    // Enforce >50 µs reset pulse between frames
     const uint32_t elapsed = (uint32_t)(micros() - gLastShowUs);
+    // WS2812 latches only after a low period longer than 50 us.
     if (elapsed < 50) delayMicroseconds(50 - elapsed);
 
-    // Disable SMs and reset PC to program start
     pio_set_sm_mask_enabled(pio0, 0xF, false);
     pio_set_sm_mask_enabled(pio1, 0xF, false);
     for (uint8_t l = 0; l < kLiveLaneCount; l++) {
@@ -88,7 +78,6 @@ static void showLaneBufs() {
         pio_sm_exec(gPioDev[l], gSm[l], pio_encode_jmp(gProgOff[l < 4 ? 0 : 1]));
     }
 
-    // Re-arm all DMA channels and trigger simultaneously
     uint32_t dmaMask = 0;
     for (uint8_t l = 0; l < kLiveLaneCount; l++) {
         dma_channel_set_read_addr(gDmaCh[l], gLaneBuf[l], false);
@@ -97,20 +86,15 @@ static void showLaneBufs() {
     }
     dma_start_channel_mask(dmaMask);
 
-    // Start all SMs simultaneously (one write per PIO block)
     pio_enable_sm_mask_in_sync(pio0, 0xF);
     pio_enable_sm_mask_in_sync(pio1, 0xF);
 
-    // Wait for all transfers to complete
     for (uint8_t l = 0; l < kLiveLaneCount; l++)
         dma_channel_wait_for_finish_blocking(gDmaCh[l]);
 
     gLastShowUs = micros();
 }
 
-// ---------------------------------------------------------------------------
-// Public API
-// ---------------------------------------------------------------------------
 void applyCurrentLimit() {
     uint32_t total = 0;
     for (size_t i = 0; i < kLiveFrameBytes; i++) total += gFrameBuffer[i];
@@ -124,15 +108,15 @@ void applyCurrentLimit() {
 }
 
 void renderFrameBuffer() {
-    // Match setBrightness() behaviour from the old NeoPixel driver
-    constexpr uint32_t kBright = (kGeneralMaxBrightnessPercent * 255U) / 100U;  // e.g. 12 at 5%
+    // Preserve the legacy NeoPixel brightness curve so existing content renders the same.
+    constexpr uint32_t kBright = (kGeneralMaxBrightnessPercent * 255U) / 100U;
     for (uint16_t i = 0; i < kLiveLedCount; i++) {
         const PhysicalPixel p   = mapLogicalToPhysical(i);
         const size_t        off = static_cast<size_t>(i) * 3U;
         gLaneBuf[p.lane][p.index] =
-            (((uint32_t)gFrameBuffer[off + 1] * kBright >> 8) << 24) |  // G
-            (((uint32_t)gFrameBuffer[off    ] * kBright >> 8) << 16) |  // R
-            (((uint32_t)gFrameBuffer[off + 2] * kBright >> 8) <<  8);   // B
+            (((uint32_t)gFrameBuffer[off + 1] * kBright >> 8) << 24) |
+            (((uint32_t)gFrameBuffer[off    ] * kBright >> 8) << 16) |
+            (((uint32_t)gFrameBuffer[off + 2] * kBright >> 8) <<  8);
     }
     showLaneBufs();
 }
@@ -144,7 +128,6 @@ void initLeds() {
     gProgOff[0] = pio_add_program(pio0, &kWs2812Prog);
     gProgOff[1] = pio_add_program(pio1, &kWs2812Prog);
 
-    // Claim SMs 0-3 in each PIO block (panics if already taken)
     pio_claim_sm_mask(pio0, 0xF);
     pio_claim_sm_mask(pio1, 0xF);
 
@@ -160,8 +143,8 @@ void initLeds() {
         pio_sm_config c = pio_get_default_sm_config();
         sm_config_set_sideset(&c, 1, false, false);
         sm_config_set_sideset_pins(&c, pin);
-        sm_config_set_out_shift(&c, false, true, 24);   // shift left, autopull at 24 bits
-        sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_TX);  // 8-entry TX FIFO
+        sm_config_set_out_shift(&c, false, true, 24);
+        sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_TX);
         sm_config_set_wrap(&c, offset, offset + 3);
         sm_config_set_clkdiv(&c, (float)clock_get_hz(clk_sys) / (10.0f * 800000.0f));
         pio_sm_init(gPioDev[l], gSm[l], offset, &c);
@@ -183,7 +166,6 @@ void initLeds() {
 
     Serial.println(F("PIO+DMA NeoPixel init OK"));
 
-    // Boot indicator: first pixel of every panel, green for 1 s
     memset(gLaneBuf, 0, sizeof(gLaneBuf));
     for (uint8_t l = 0; l < kLiveLaneCount; l++)
         for (uint8_t p = 0; p < kLivePanelsPerLane[l]; p++)
@@ -194,9 +176,6 @@ void initLeds() {
     showLaneBufs();
 }
 
-// ---------------------------------------------------------------------------
-// Idle blink
-// ---------------------------------------------------------------------------
 static uint32_t gNextBlinkMs  = 0;
 static bool     gBlinkOn      = false;
 constexpr uint32_t kBlinkIntervalMs = 500;

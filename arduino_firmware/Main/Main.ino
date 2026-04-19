@@ -12,14 +12,13 @@ void setup() {
 }
 
 void loop() {
-  // USB has highest priority — renders immediately when data arrives
+  // Live USB traffic owns the LEDs until it goes idle.
   serviceUsbStream();
   if (usbStreamActive()) {
     gIdleBlinkActive = false;
     return;
   }
 
-  // No USB data — run SD animation (or idle blink if SD unavailable)
   if (!gSdReady || !gAnimReady) {
     if (millis() >= gNextSdRetryMs) {
       gNextSdRetryMs = millis() + kSdRetryIntervalMs;

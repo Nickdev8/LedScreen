@@ -5,8 +5,8 @@ Convert an xLights FSEQ v2 (uncompressed) sequence to .lsa for SD card playback.
 The output .lsa has the loop flag set so the Pico firmware loops it forever.
 
 Usage:
-    python3 fseq_to_lsa.py animation.fseq animation.lsa
-    python3 fseq_to_lsa.py animation.fseq animation.lsa --fps 30
+    python3 scripts/fseq_to_lsa.py animation.fseq animation.lsa
+    python3 scripts/fseq_to_lsa.py animation.fseq animation.lsa --fps 30
 
 No external dependencies — standard library only.
 """

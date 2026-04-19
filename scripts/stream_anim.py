@@ -4,8 +4,8 @@ Stream .rgb animation files to the LED screen over USB serial.
 Replaces the SD card — works even without a working SD card reader.
 
 Usage:
-    python3 stream_anim.py /dev/ttyACM0 path/to/file.rgb [fps]
-    python3 stream_anim.py /dev/ttyACM0 path/to/playlist.txt [fps]
+    python3 scripts/stream_anim.py /dev/ttyACM0 path/to/file.rgb [fps]
+    python3 scripts/stream_anim.py /dev/ttyACM0 path/to/playlist.txt [fps]
 
 Each frame is kFrameBytes = 5120 pixels * 3 bytes = 15360 bytes of raw RGB.
 Protocol: 0xAB 0xCD magic header + 15360 bytes per frame.

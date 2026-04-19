@@ -2,11 +2,6 @@
 
 #include <Arduino.h>
 
-// ---------------------------------------------------------------------------
-// Active live settings (used by current RPI-PICO.ino)
-// ---------------------------------------------------------------------------
-// LED data output wiring from schematic:
-// T_OUT0..7 (U1 A0..A7) -> LED0..7_DATA -> J_LED0..7 pin 2
 constexpr uint8_t kLedOutputCount = 8;
 constexpr uint8_t kLedGpioByOutput[kLedOutputCount] = {
   0,   // GPOIO 0 output 0: T_OUT0 / LED0_DATA / J_LED0
@@ -19,7 +14,6 @@ constexpr uint8_t kLedGpioByOutput[kLedOutputCount] = {
   15   // GPOIO 15 output 7: T_OUT7 / LED7_DATA / J_LED7
 };
 
-// Twenty panels total in a 2 high x 10 wide wall:
 // - top row:    outputs 0..3 drive 2,3,2,3 panels left-to-right
 // - bottom row: outputs 4..7 drive 2,3,2,3 panels left-to-right
 constexpr uint8_t kLiveLaneCount = 4;
@@ -50,24 +44,15 @@ constexpr uint32_t kLiveFrameTimeoutMs = 50UL;
 
 
 // Brightness/power safety.
-// Hard cap: never exceed this global brightness percentage.
 constexpr uint8_t kGeneralMaxBrightnessPercent = 5;
-// Adaptive cap: reduce brightness further to keep estimated current under this.
 constexpr uint32_t kMaxCurrentMa = 2000UL;
-constexpr uint32_t kLedMaPerChannel = 20UL;  // WS2812 worst-case per color channel
+constexpr uint32_t kLedMaPerChannel = 20UL;  
 
 
 
-
-
-// Logical XY -> physical strip mapping.
-// xLights Generic Serial matrix usually sends by string first.
-// For 16x160 (16 strings, 160 pixels each), enable column-major decode.
 constexpr bool kLiveInputColumnMajor = false;
-// Rotate each panel before serpentine/index mapping: 0,1,2,3 quarter-turns CCW.
 constexpr uint8_t kPanelRotationQuarterTurnsCCW = 3;
 constexpr bool kMatrixSerpentine = true;
 constexpr bool kMatrixReverseOddRows = true;
 constexpr bool kMatrixFlipX = false;
 constexpr bool kMatrixFlipY = true;
-

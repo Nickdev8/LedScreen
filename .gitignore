@@ -48,11 +48,12 @@ arduino_firmware/*/build/
 *.bin
 *.elf
 *.uf2
+!examples/example_firmware.uf2
 *.map
 
 # Misc local files
 .tools/
-src/.history/
+pcb/src/.history/
 xlights_project/xLights_dbgrpt-*.zip
 
 # AI / local coding harness metadata
@@ -66,4 +67,3 @@ final_codex_message.md
 AGENTS.md
 CLAUDE.md
 UX_REDESIGN_*.md
-

@@ -3,11 +3,7 @@
 #include "hardware/gpio.h"
 #include "Config.h"
 #include "Sd.h"
-#include "Leds.h"   // gFrameBuffer, renderFrameBuffer, applyCurrentLimit
-
-// ===========================================================================
-// SD card — bare-metal SPI driver  (ported from SDREADD v1.1.0)
-// ===========================================================================
+#include "Leds.h"
 
 static bool gSdhc = false;
 
@@ -31,10 +27,10 @@ static uint8_t sdSendCmd(uint8_t cmd, uint32_t arg, uint8_t crc) {
   return sdWaitR1();
 }
 
-// CMD55 + ACMDn — CS must not rise between them
+// Some cards reject ACMDs if CS toggles between CMD55 and the follow-up command.
 static uint8_t sdSendACmd(uint8_t acmd, uint32_t arg) {
   sdSendCmd(55, 0, 0x65);
-  sdXfer(); sdXfer(); sdXfer();   // 24 idle clocks before ACMD frame
+  sdXfer(); sdXfer(); sdXfer();
   sdXfer(0x40 | acmd);
   sdXfer(arg >> 24); sdXfer(arg >> 16); sdXfer(arg >> 8); sdXfer(arg);
   sdXfer(0x01);
@@ -45,35 +41,36 @@ bool sdInit() {
   SPI.end();
   SPI.setRX(kSdMiso); SPI.setTX(kSdMosi); SPI.setSCK(kSdSck);
   SPI.begin();
-  gpio_pull_up(kSdMiso);    // SD DO is open-drain; needs pull-up
+  // SD DO is open-drain until the card switches fully into SPI mode.
+  gpio_pull_up(kSdMiso);
   pinMode(kSdCs, OUTPUT);
 
   SPI.beginTransaction(SPISettings(400000UL, MSBFIRST, SPI_MODE0));
   sdCsHigh(); delay(2);
-  for (uint8_t i = 0; i < 10; i++) sdXfer();    // ≥80 idle clocks
+  for (uint8_t i = 0; i < 10; i++) sdXfer();
   sdCsLow();
 
   const auto abort = [&]() -> bool { sdCsHigh(); SPI.endTransaction(); return false; };
 
-  if (sdSendCmd(0, 0, 0x95) != 0x01)     return abort();  // reset → SPI mode
-  if (sdSendCmd(8, 0x1AA, 0x87) != 0x01) return abort();  // SD v2 + 3.3V check
+  if (sdSendCmd(0, 0, 0x95) != 0x01)     return abort();
+  if (sdSendCmd(8, 0x1AA, 0x87) != 0x01) return abort();
   uint8_t r7[4]; for (auto& b : r7) b = sdXfer();
   if (r7[2] != 0x01 || r7[3] != 0xAA)   return abort();
 
   uint8_t r = 0x01;
   for (uint32_t t = millis(); r == 0x01 && millis() - t < 1000;) {
     sdCsHigh(); sdCsLow();
-    r = sdSendACmd(41, 0x40000000);   // HCS=1
+    r = sdSendACmd(41, 0x40000000);
   }
   if (r != 0x00) return abort();
 
-  if (sdSendCmd(58, 0, 0x01) != 0x00) return abort();     // read OCR
+  if (sdSendCmd(58, 0, 0x01) != 0x00) return abort();
   uint8_t ocr[4]; for (auto& b : ocr) b = sdXfer();
   gSdhc = (ocr[0] & 0x40) != 0;
 
   if (!gSdhc) {
     sdCsHigh(); sdCsLow();
-    if (sdSendCmd(16, 512, 0x01) != 0x00) return abort(); // set block length for SDSC
+    if (sdSendCmd(16, 512, 0x01) != 0x00) return abort();
   }
 
   sdCsHigh();
@@ -90,15 +87,11 @@ bool sdReadSector(uint32_t lba, uint8_t* buf) {
   for (uint32_t i = 0; i < 50000 && !ok; i++) ok = sdXfer() == 0xFE;
   if (!ok) { sdCsHigh(); SPI.endTransaction(); return false; }
   for (uint16_t i = 0; i < 512; i++) buf[i] = sdXfer();
-  sdXfer(); sdXfer();   // discard CRC
+  sdXfer(); sdXfer();
   sdCsHigh();
   SPI.endTransaction();
   return true;
 }
-
-// ===========================================================================
-// FAT32 — minimal reader
-// ===========================================================================
 
 static uint32_t gFatLba;
 static uint32_t gDataLba;
@@ -124,7 +117,6 @@ uint32_t fatNextCluster(uint32_t cluster) {
 bool fatMount(uint32_t& outFirstCluster, uint32_t& outFileSize) {
   uint8_t buf[512];
 
-  // MBR → partition 1 start LBA
   if (!sdReadSector(0, buf)) return false;
   uint32_t partLba = 0;
   if (buf[510] == 0x55 && buf[511] == 0xAA) {
@@ -134,7 +126,6 @@ bool fatMount(uint32_t& outFirstCluster, uint32_t& outFileSize) {
             | (static_cast<uint32_t>(buf[446+11]) << 24);
   }
 
-  // BPB
   if (!sdReadSector(partLba, buf)) return false;
   if (buf[510] != 0x55 || buf[511] != 0xAA) return false;
   const uint16_t bytesPerSec = static_cast<uint16_t>(buf[11]) | (static_cast<uint16_t>(buf[12]) << 8);
@@ -153,7 +144,6 @@ bool fatMount(uint32_t& outFirstCluster, uint32_t& outFileSize) {
   gFatLba  = partLba + reservedSecs;
   gDataLba = gFatLba + static_cast<uint32_t>(numFats) * secsPerFat;
 
-  // Walk root directory, find first file with extension "LSA"
   uint32_t dirCluster = rootCluster;
   while (dirCluster < 0x0FFFFFF8U) {
     const uint32_t lba = fatClusterToLba(dirCluster);
@@ -161,10 +151,10 @@ bool fatMount(uint32_t& outFirstCluster, uint32_t& outFileSize) {
       if (!sdReadSector(lba + s, buf)) return false;
       for (uint8_t e = 0; e < 16; e++) {
         uint8_t* en = buf + static_cast<uint16_t>(e) * 32;
-        if (en[0] == 0x00) return false;  // end of directory
-        if (en[0] == 0xE5) continue;      // deleted
-        if (en[11] == 0x0F) continue;     // LFN
-        if (en[11] & 0x18) continue;      // volume label / directory
+        if (en[0] == 0x00) return false;
+        if (en[0] == 0xE5) continue;
+        if (en[11] == 0x0F) continue;
+        if (en[11] & 0x18) continue;
         if (en[8] == 'L' && en[9] == 'S' && en[10] == 'A') {
           const uint32_t hi = static_cast<uint32_t>(en[20]) | (static_cast<uint32_t>(en[21]) << 8);
           const uint32_t lo = static_cast<uint32_t>(en[26]) | (static_cast<uint32_t>(en[27]) << 8);
@@ -181,10 +171,6 @@ bool fatMount(uint32_t& outFirstCluster, uint32_t& outFileSize) {
   }
   return false;
 }
-
-// ===========================================================================
-// LSA animation streaming
-// ===========================================================================
 
 constexpr size_t kLsaHeaderSize = 16;
 constexpr char   kLsaMagic[4]   = { 'L', 'S', 'A', '1' };
@@ -281,10 +267,6 @@ static bool parseLsaHeader() {
   return true;
 }
 
-// ===========================================================================
-// Public: SD + animation init and playback
-// ===========================================================================
-
 bool     gSdReady       = false;
 bool     gAnimReady     = false;
 uint32_t gNextSdRetryMs = 0;
@@ -352,7 +334,6 @@ void updateAnimationPlayback() {
   renderFrameBuffer();
   gCurrentFrame++;
 
-  // Progress report once per second
   if (static_cast<int32_t>(now - gNextProgressMs) >= 0) {
     const uint32_t pct = gAnimFrameCount ? (gCurrentFrame * 100UL / gAnimFrameCount) : 0;
     Serial.print(F("frame ")); Serial.print(gCurrentFrame);

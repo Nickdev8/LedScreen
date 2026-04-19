@@ -1,5 +1,5 @@
-![Blender Render](RENDER.png)
-![irl pcb](PXL_20260321_124728446.MP.jpg)
+![Blender Render](docs/images/RENDER.png)
+![irl pcb](docs/images/PXL_20260321_124728446.MP.jpg)
 
 # Led Control Board
 
@@ -22,8 +22,8 @@ After this board is fully working, I also want to use it in a deadmau5-style hea
 - LED power comes from an external regulated 5V PSU; the board is not intended to carry full LED current for large panel loads.
 
 ## How do you use it?
-If you want to update the code on the MCU, I would really suggest reading [The firmware instuctions](FIRMWARE_INSTUCTIONS.md).
-If you want to update the animations on the display, read [the animation instuctions](ANIMATIONS_INSTUCTIONS.md).
+If you want to update the code on the MCU, I would really suggest reading [The firmware instuctions](docs/FIRMWARE_INSTUCTIONS.md).
+If you want to update the animations on the display, read [the animation instuctions](docs/ANIMATIONS_INSTUCTIONS.md).
 
 The basic idea is:
 1. Flash the Pico with the firmware from `arduino_firmware/RPI-PICO/`.
@@ -72,28 +72,29 @@ If you want per-file frame-rate and loop control, use a `.lsa` file with this 16
 ```text
 /
 ├── README.md
-├── FIRMWARE_INSTUCTIONS.md
-├── ANIMATIONS_INSTUCTIONS.md
-├── gerber.zip
-├── Gerber/
-├── bom/
-├── Case/
 ├── arduino_firmware/
-├── src/
+├── docs/
+├── examples/
+├── mechanical/
+├── pcb/
+├── scripts/
+├── libraries/
 └── xlights_project/
 ```
 
 ## Project Files
-- [`src/LedScreen.kicad_sch`](src/LedScreen.kicad_sch) - main schematic source
-- [`src/LedScreen.kicad_pcb`](src/LedScreen.kicad_pcb) - PCB layout source
-- [`src/LedScreen.kicad_pro`](src/LedScreen.kicad_pro) - KiCad project file
-- [`LedScreen.pdf`](LedScreen.pdf) - exported schematic PDF
-- [`gerber.zip`](gerber.zip) - gerbers bundled for fabrication upload
-- [`Gerber/`](Gerber/) - individual gerber outputs
-- [`bom/ibom.html`](bom/ibom.html) - interactive BOM
-- [`Case/`](Case/) - case and standoff print files
+- [`pcb/src/LedScreen.kicad_sch`](pcb/src/LedScreen.kicad_sch) - main schematic source
+- [`pcb/src/LedScreen.kicad_pcb`](pcb/src/LedScreen.kicad_pcb) - PCB layout source
+- [`pcb/src/LedScreen.kicad_pro`](pcb/src/LedScreen.kicad_pro) - KiCad project file
+- [`pcb/exports/LedScreen.pdf`](pcb/exports/LedScreen.pdf) - exported schematic PDF
+- [`pcb/exports/gerber.zip`](pcb/exports/gerber.zip) - gerbers bundled for fabrication upload
+- [`pcb/Gerber/`](pcb/Gerber/) - individual gerber outputs
+- [`pcb/bom/ibom.html`](pcb/bom/ibom.html) - interactive BOM
+- [`mechanical/case/`](mechanical/case/) - case and standoff print files
 - [`xlights_project/`](xlights_project/) - xLights example project for driving the board
-- [`example_firmware.uf2`](example_firmware.uf2) - example UF2 firmware file
+- [`examples/example_firmware.uf2`](examples/example_firmware.uf2) - example UF2 firmware file
+- [`scripts/fseq_to_lsa.py`](scripts/fseq_to_lsa.py) - convert xLights FSEQ files to `.lsa`
+- [`scripts/stream_anim.py`](scripts/stream_anim.py) - stream raw frames to the board over USB
 
 ## Notes
 I also included an xLights example for controlling this board.
@@ -106,10 +107,10 @@ Use an external 5V PSU sized for the actual panel count and brightness.
 Interactive BOM: [cdn.nickesselman.nl](https://cdn.nickesselman.nl/ledpanel/ibom.html)
 
 ## Project Images
-![jlcpcb orders](jlcMyOrders.png)
-![gerbers](gerbers.png)
-![pcb](pcb.png)
-![schematic](scem.png)
+![jlcpcb orders](docs/images/jlcMyOrders.png)
+![gerbers](docs/images/gerbers.png)
+![pcb](docs/images/pcb.png)
+![schematic](docs/images/scem.png)
 
 ## Acknowledgements
 - Ruben helped me brainstorm the idea and do the math on the power consumption
