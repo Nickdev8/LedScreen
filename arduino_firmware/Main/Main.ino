@@ -1,14 +1,24 @@
 #include "Config.h"
 #include "Leds.h"
 #include "Sd.h"
+#include "Gif.h"
 #include "UsbStream.h"
+
+static void tryInitPlayback() {
+  initSdAndAnimation();
+  if (!gAnimReady && gSdReady) {
+    uint32_t gifCluster, gifSize;
+    if (fatFindFile("GIF", gifCluster, gifSize))
+      initGifPlayback(gifCluster, gifSize);
+  }
+}
 
 void setup() {
   Serial.begin(kLiveSerialBaud);
   delay(1000);
 
   initLeds();
-  initSdAndAnimation();
+  tryInitPlayback();
 }
 
 void loop() {
@@ -19,12 +29,14 @@ void loop() {
     return;
   }
 
-  if (!gSdReady || !gAnimReady) {
+  const bool playing = gAnimReady || gGifReady;
+
+  if (!gSdReady || !playing) {
     if (millis() >= gNextSdRetryMs) {
       gNextSdRetryMs = millis() + kSdRetryIntervalMs;
-      initSdAndAnimation();
+      tryInitPlayback();
     }
-    if (!gAnimReady) {
+    if (!playing) {
       if (!gIdleBlinkActive) resetIdleBlink();
       updateIdleBlink();
     }
@@ -32,5 +44,6 @@ void loop() {
   }
 
   gIdleBlinkActive = false;
-  updateAnimationPlayback();
+  if (gAnimReady) updateAnimationPlayback();
+  else            updateGifPlayback();
 }

@@ -121,7 +121,8 @@ static void sdStopMultiRead() {
 
 static uint32_t gFatLba;
 static uint32_t gDataLba;
-static uint8_t  gSpc;
+uint8_t         gSpc;
+static uint32_t gRootCluster;
 
 uint32_t fatClusterToLba(uint32_t cluster) {
   return gDataLba + (cluster - 2U) * gSpc;
@@ -163,14 +164,19 @@ bool fatMount(uint32_t& outFirstCluster, uint32_t& outFileSize) {
                               | (static_cast<uint32_t>(buf[37]) << 8)
                               | (static_cast<uint32_t>(buf[38]) << 16)
                               | (static_cast<uint32_t>(buf[39]) << 24);
-  const uint32_t rootCluster  = static_cast<uint32_t>(buf[44])
-                              | (static_cast<uint32_t>(buf[45]) << 8)
-                              | (static_cast<uint32_t>(buf[46]) << 16)
-                              | (static_cast<uint32_t>(buf[47]) << 24);
+  gRootCluster = static_cast<uint32_t>(buf[44])
+               | (static_cast<uint32_t>(buf[45]) << 8)
+               | (static_cast<uint32_t>(buf[46]) << 16)
+               | (static_cast<uint32_t>(buf[47]) << 24);
   gFatLba  = partLba + reservedSecs;
   gDataLba = gFatLba + static_cast<uint32_t>(numFats) * secsPerFat;
 
-  uint32_t dirCluster = rootCluster;
+  return fatFindFile("LSA", outFirstCluster, outFileSize);
+}
+
+bool fatFindFile(const char ext[3], uint32_t& outCluster, uint32_t& outFileSize) {
+  uint8_t buf[512];
+  uint32_t dirCluster = gRootCluster;
   while (dirCluster < 0x0FFFFFF8U) {
     const uint32_t lba = fatClusterToLba(dirCluster);
     for (uint8_t s = 0; s < gSpc; s++) {
@@ -181,10 +187,10 @@ bool fatMount(uint32_t& outFirstCluster, uint32_t& outFileSize) {
         if (en[0] == 0xE5) continue;
         if (en[11] == 0x0F) continue;
         if (en[11] & 0x18) continue;
-        if (en[8] == 'L' && en[9] == 'S' && en[10] == 'A') {
+        if (en[8] == (uint8_t)ext[0] && en[9] == (uint8_t)ext[1] && en[10] == (uint8_t)ext[2]) {
           const uint32_t hi = static_cast<uint32_t>(en[20]) | (static_cast<uint32_t>(en[21]) << 8);
           const uint32_t lo = static_cast<uint32_t>(en[26]) | (static_cast<uint32_t>(en[27]) << 8);
-          outFirstCluster = (hi << 16) | lo;
+          outCluster  = (hi << 16) | lo;
           outFileSize = static_cast<uint32_t>(en[28])
                       | (static_cast<uint32_t>(en[29]) << 8)
                       | (static_cast<uint32_t>(en[30]) << 16)

@@ -213,13 +213,13 @@ void initLeds() {
 
     Serial.println(F("PIO+DMA NeoPixel init OK"));
 
-    for (size_t i = 0; i < kLiveFrameBytes; i += 3)
-        { gFrameBuffer[i] = 40; gFrameBuffer[i+1] = 0; gFrameBuffer[i+2] = 0; }
-    prepareLaneBuffers();
+    memset(gLaneBuf, 0, sizeof(gLaneBuf));
+    for (uint8_t l = 0; l < kLiveLaneCount; l++)
+        for (uint8_t p = 0; p < kLivePanelsPerLane[l]; p++)
+            gLaneBuf[l][(uint16_t)p * kLiveLedsPerPanel] = (40u << 24); // green dot
     showLaneBufs();
     delay(1000);
-    memset(gFrameBuffer, 0, kLiveFrameBytes);
-    prepareLaneBuffers();
+    memset(gLaneBuf, 0, sizeof(gLaneBuf));
     showLaneBufs();
 }
 
@@ -228,15 +228,16 @@ static bool     gBlinkOn      = false;
 constexpr uint32_t kBlinkIntervalMs = 500;
 
 static void setPanelLeds(uint8_t r, uint8_t g, uint8_t b) {
-    for (size_t i = 0; i < kLiveFrameBytes; i += 3)
-        { gFrameBuffer[i] = r; gFrameBuffer[i+1] = g; gFrameBuffer[i+2] = b; }
-    prepareLaneBuffers();
+    memset(gLaneBuf, 0, sizeof(gLaneBuf));
+    const uint32_t packed = ((uint32_t)g << 24) | ((uint32_t)r << 16) | ((uint32_t)b << 8);
+    for (uint8_t l = 0; l < kLiveLaneCount; l++)
+        for (uint8_t p = 0; p < kLivePanelsPerLane[l]; p++)
+            gLaneBuf[l][(uint16_t)p * kLiveLedsPerPanel] = packed;
     showLaneBufs();
 }
 
 void resetIdleBlink() {
-    memset(gFrameBuffer, 0, kLiveFrameBytes);
-    prepareLaneBuffers();
+    memset(gLaneBuf, 0, sizeof(gLaneBuf));
     showLaneBufs();
     gBlinkOn = false; gNextBlinkMs = millis(); gIdleBlinkActive = true;
 }
