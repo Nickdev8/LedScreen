@@ -28,8 +28,11 @@ static int      gDmaCh[kLiveLaneCount];
 // Pack GRB into the upper 24 bits so the PIO shift register emits it MSB-first.
 static uint32_t gLaneBuf[kLiveLaneCount][kLedsPerLane];
 
-uint8_t gFrameBuffer[kLiveFrameBytes];
-bool    gIdleBlinkActive = false;
+static uint8_t gFrameBuf0[kLiveFrameBytes];
+static uint8_t gFrameBuf1[kLiveFrameBytes];
+uint8_t* gFrameBuffer     = gFrameBuf0;
+uint8_t* gFrameBufferBack = gFrameBuf1;
+bool     gIdleBlinkActive = false;
 
 static uint32_t gLastShowUs = 0;
 
@@ -43,7 +46,16 @@ static PhysicalPixel mapLogicalToPhysical(uint16_t idx) {
     if (kMatrixFlipY) y = kLiveMatrixHeight - 1U - y;
 
     const uint16_t panelsWide = kLiveMatrixWidth / kLivePanelWidth;
-    const uint16_t panelIndex = (y / kLivePanelHeight) * panelsWide + (x / kLivePanelWidth);
+    const bool     isTopRow   = (y / kLivePanelHeight) == 0;
+
+    // Row 180°: flip x for both panel selection and content, and flip py.
+    const bool     rowRot180  = isTopRow ? kTopRowRot180 : kBotRowRot180;
+    const uint16_t xr         = rowRot180 ? kLiveMatrixWidth - 1U - x : x;
+
+    // Panel order reversal: flip x for panel selection only, content (px) is unaffected.
+    const uint16_t xp = (isTopRow ? kTopRowReverseX : kBotRowReverseX)
+                       ? kLiveMatrixWidth - 1U - xr : xr;
+    const uint16_t panelIndex = (y / kLivePanelHeight) * panelsWide + (xp / kLivePanelWidth);
 
     uint8_t pil = static_cast<uint8_t>(panelIndex);
     uint8_t lane = 0;
@@ -51,12 +63,23 @@ static PhysicalPixel mapLogicalToPhysical(uint16_t idx) {
         pil -= kLivePanelsPerLane[lane++];
     if (lane >= kLiveLaneCount) return {0, 0};
 
-    uint16_t px = x % kLivePanelWidth;
-    uint16_t py = y % kLivePanelHeight;
+    uint16_t px = xr % kLivePanelWidth;
+    uint16_t py = y  % kLivePanelHeight;
+    if (rowRot180) py = kLivePanelHeight - 1U - py;
 
     if      (kPanelRotationQuarterTurnsCCW == 1) { uint16_t t = px; px = py; py = kLivePanelWidth  - 1U - t; }
     else if (kPanelRotationQuarterTurnsCCW == 2) { px = kLivePanelWidth  - 1U - px; py = kLivePanelHeight - 1U - py; }
     else if (kPanelRotationQuarterTurnsCCW == 3) { uint16_t t = py; py = px; px = kLivePanelHeight - 1U - t; }
+
+    // Per-panel content corrections (applied before serpentine).
+    if (isTopRow ? kTopPanelRot180 : kBotPanelRot180) {
+        px = kLivePanelWidth  - 1U - px;
+        py = kLivePanelHeight - 1U - py;
+    }
+    if (isTopRow ? kTopPanelFlipX : kBotPanelFlipX)
+        px = kLivePanelWidth  - 1U - px;
+    if (isTopRow ? kTopPanelFlipY : kBotPanelFlipY)
+        py = kLivePanelHeight - 1U - py;
 
     if (kMatrixSerpentine) {
         const bool odd = (py & 1U) != 0;
@@ -66,9 +89,8 @@ static PhysicalPixel mapLogicalToPhysical(uint16_t idx) {
     return { lane, static_cast<uint16_t>(pil * kLiveLedsPerPanel + py * kLivePanelWidth + px) };
 }
 
-static void showLaneBufs() {
+void startDisplay() {
     const uint32_t elapsed = (uint32_t)(micros() - gLastShowUs);
-    // WS2812 latches only after a low period longer than 50 us.
     if (elapsed < 50) delayMicroseconds(50 - elapsed);
 
     pio_set_sm_mask_enabled(pio0, 0xF, false);
@@ -85,39 +107,64 @@ static void showLaneBufs() {
         dmaMask |= (1u << gDmaCh[l]);
     }
     dma_start_channel_mask(dmaMask);
-
     pio_enable_sm_mask_in_sync(pio0, 0xF);
     pio_enable_sm_mask_in_sync(pio1, 0xF);
+    // Returns immediately — DMA + PIO run autonomously.
+}
 
+void waitForDisplay() {
     for (uint8_t l = 0; l < kLiveLaneCount; l++)
         dma_channel_wait_for_finish_blocking(gDmaCh[l]);
-
     gLastShowUs = micros();
 }
 
-void applyCurrentLimit() {
-    uint32_t total = 0;
-    for (size_t i = 0; i < kLiveFrameBytes; i++) total += gFrameBuffer[i];
-    const uint32_t estimatedMa = (total / 255U) * kLedMaPerChannel
-                                 * kGeneralMaxBrightnessPercent / 100U;
-    if (estimatedMa > kMaxCurrentMa) {
-        const uint32_t scale = (kMaxCurrentMa * 255U) / estimatedMa;
-        for (size_t i = 0; i < kLiveFrameBytes; i++)
-            gFrameBuffer[i] = static_cast<uint8_t>((gFrameBuffer[i] * scale) >> 8);
-    }
+static void showLaneBufs() {
+    startDisplay();
+    waitForDisplay();
 }
 
-void renderFrameBuffer() {
-    // Preserve the legacy NeoPixel brightness curve so existing content renders the same.
-    constexpr uint32_t kBright = (kGeneralMaxBrightnessPercent * 255U) / 100U;
+void applyCurrentLimit() {
+    // The frame buffer is row-major. With kMatrixFlipY=true, logical rows 0-15 map to
+    // the physical bottom row (bottom PSU) and rows 16-31 map to the physical top row (top PSU).
+    constexpr size_t   kHalf     = kLiveFrameBytes / 2;
+    constexpr uint32_t kMaxScale = (kGeneralMaxBrightnessPercent * 255U) / 100U;
+
+    uint32_t sumBot = 0, sumTop = 0;
+    for (size_t i = 0;     i < kHalf;           i++) sumBot += gFrameBuffer[i];
+    for (size_t i = kHalf; i < kLiveFrameBytes; i++) sumTop += gFrameBuffer[i];
+
+    // Maximum scale (0-255) that keeps a half-buffer within its PSU budget.
+    // At scale S: current ≈ rowSum × kLedMaPerChannel × S / (255 × 255) ≤ kPsuCurrentMa
+    // → S ≤ kPsuCurrentMa × 255² / (rowSum × kLedMaPerChannel)
+    auto rowScale = [](uint32_t rowSum) -> uint32_t {
+        if (rowSum == 0) return kMaxScale;
+        const uint32_t s = (kPsuCurrentMa * 255UL * 255UL)
+                         / (rowSum * (uint32_t)kLedMaPerChannel);
+        return s < kMaxScale ? s : kMaxScale;
+    };
+
+    const uint32_t scaleBot = rowScale(sumBot);
+    const uint32_t scaleTop = rowScale(sumTop);
+    const uint32_t scale    = scaleBot < scaleTop ? scaleBot : scaleTop;
+
+    if (scale >= 255U) return;
+    for (size_t i = 0; i < kLiveFrameBytes; i++)
+        gFrameBuffer[i] = static_cast<uint8_t>((gFrameBuffer[i] * scale) >> 8);
+}
+
+void prepareLaneBuffers() {
     for (uint16_t i = 0; i < kLiveLedCount; i++) {
         const PhysicalPixel p   = mapLogicalToPhysical(i);
         const size_t        off = static_cast<size_t>(i) * 3U;
         gLaneBuf[p.lane][p.index] =
-            (((uint32_t)gFrameBuffer[off + 1] * kBright >> 8) << 24) |
-            (((uint32_t)gFrameBuffer[off    ] * kBright >> 8) << 16) |
-            (((uint32_t)gFrameBuffer[off + 2] * kBright >> 8) <<  8);
+            ((uint32_t)gFrameBuffer[off + 1] << 24) |
+            ((uint32_t)gFrameBuffer[off    ] << 16) |
+            ((uint32_t)gFrameBuffer[off + 2] <<  8);
     }
+}
+
+void renderFrameBuffer() {
+    prepareLaneBuffers();
     showLaneBufs();
 }
 
@@ -166,13 +213,13 @@ void initLeds() {
 
     Serial.println(F("PIO+DMA NeoPixel init OK"));
 
-    memset(gLaneBuf, 0, sizeof(gLaneBuf));
-    for (uint8_t l = 0; l < kLiveLaneCount; l++)
-        for (uint8_t p = 0; p < kLivePanelsPerLane[l]; p++)
-            gLaneBuf[l][(uint16_t)p * kLiveLedsPerPanel] = (40u << 24);
+    for (size_t i = 0; i < kLiveFrameBytes; i += 3)
+        { gFrameBuffer[i] = 40; gFrameBuffer[i+1] = 0; gFrameBuffer[i+2] = 0; }
+    prepareLaneBuffers();
     showLaneBufs();
     delay(1000);
-    memset(gLaneBuf, 0, sizeof(gLaneBuf));
+    memset(gFrameBuffer, 0, kLiveFrameBytes);
+    prepareLaneBuffers();
     showLaneBufs();
 }
 
@@ -181,16 +228,15 @@ static bool     gBlinkOn      = false;
 constexpr uint32_t kBlinkIntervalMs = 500;
 
 static void setPanelLeds(uint8_t r, uint8_t g, uint8_t b) {
-    memset(gLaneBuf, 0, sizeof(gLaneBuf));
-    const uint32_t packed = ((uint32_t)g << 24) | ((uint32_t)r << 16) | ((uint32_t)b << 8);
-    for (uint8_t l = 0; l < kLiveLaneCount; l++)
-        for (uint8_t p = 0; p < kLivePanelsPerLane[l]; p++)
-            gLaneBuf[l][(uint16_t)p * kLiveLedsPerPanel] = packed;
+    for (size_t i = 0; i < kLiveFrameBytes; i += 3)
+        { gFrameBuffer[i] = r; gFrameBuffer[i+1] = g; gFrameBuffer[i+2] = b; }
+    prepareLaneBuffers();
     showLaneBufs();
 }
 
 void resetIdleBlink() {
-    memset(gLaneBuf, 0, sizeof(gLaneBuf));
+    memset(gFrameBuffer, 0, kLiveFrameBytes);
+    prepareLaneBuffers();
     showLaneBufs();
     gBlinkOn = false; gNextBlinkMs = millis(); gIdleBlinkActive = true;
 }

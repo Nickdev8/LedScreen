@@ -80,7 +80,7 @@ bool sdInit() {
 
 bool sdReadSector(uint32_t lba, uint8_t* buf) {
   const uint32_t addr = gSdhc ? lba : lba * 512UL;
-  SPI.beginTransaction(SPISettings(8000000UL, MSBFIRST, SPI_MODE0));
+  SPI.beginTransaction(SPISettings(kSdReadSpeedHz, MSBFIRST, SPI_MODE0));
   sdCsLow();
   if (sdSendCmd(17, addr, 0x01) != 0x00) { sdCsHigh(); SPI.endTransaction(); return false; }
   bool ok = false;
@@ -91,6 +91,32 @@ bool sdReadSector(uint32_t lba, uint8_t* buf) {
   sdCsHigh();
   SPI.endTransaction();
   return true;
+}
+
+static bool sdStartMultiRead(uint32_t lba) {
+  const uint32_t addr = gSdhc ? lba : lba * 512UL;
+  SPI.beginTransaction(SPISettings(kSdReadSpeedHz, MSBFIRST, SPI_MODE0));
+  sdCsLow();
+  if (sdSendCmd(18, addr, 0x01) != 0x00) { sdCsHigh(); SPI.endTransaction(); return false; }
+  return true;
+}
+
+static bool sdReadBlock(uint8_t* buf) {
+  for (uint32_t i = 0; i < 50000; i++) {
+    if (sdXfer() == 0xFE) {
+      for (uint16_t j = 0; j < 512; j++) buf[j] = sdXfer();
+      sdXfer(); sdXfer();  // discard CRC
+      return true;
+    }
+  }
+  return false;
+}
+
+static void sdStopMultiRead() {
+  sdSendCmd(12, 0, 0x01);  // CMD12 stop transmission
+  for (uint32_t i = 0; i < 50000; i++) { if (sdXfer() == 0xFF) break; }
+  sdCsHigh();
+  SPI.endTransaction();
 }
 
 static uint32_t gFatLba;
@@ -244,6 +270,64 @@ static bool streamSeekToFirstFrame() {
   return true;
 }
 
+// Reads exactly kLiveFrameBytes into dst using CMD18 for the bulk, CMD17 for partials.
+// Each frame starts at gReadByteInSector==16 within its first sector (16-byte LSA header offset).
+// After the call, gReadByteInSector==16 and gSectorLoaded==true for the next frame.
+static bool streamReadFrame(uint8_t* dst) {
+  // Part 1: 496-byte tail of the current sector.
+  // After streamSeekToFirstFrame (or a previous streamReadFrame), gSectorLoaded is always true.
+  if (!gSectorLoaded) {
+    if (!sdReadSector(fatClusterToLba(gReadCluster) + gReadSectorInCluster, gFileSectorBuf))
+      return false;
+    gSectorLoaded = true;
+  }
+  const uint16_t tailBytes = 512U - gReadByteInSector;  // always 496
+  memcpy(dst, gFileSectorBuf + gReadByteInSector, tailBytes);
+  dst += tailBytes;
+  gReadByteInSector = 0;
+  gSectorLoaded     = false;
+  gReadSectorInCluster++;
+  if (gReadSectorInCluster >= gSpc) {
+    gReadSectorInCluster = 0;
+    gReadCluster = fatNextCluster(gReadCluster);
+    if (gReadCluster >= 0x0FFFFFF8U) { Serial.println(F("Anim: FAT chain ended early")); return false; }
+  }
+
+  // Part 2: 29 full sectors via CMD18, cluster-by-cluster.
+  uint8_t sectorsLeft = 29;
+  while (sectorsLeft > 0) {
+    const uint8_t inCluster    = gSpc - gReadSectorInCluster;
+    const uint8_t blocksThisRun = inCluster < sectorsLeft ? inCluster : sectorsLeft;
+    const uint32_t startLba    = fatClusterToLba(gReadCluster) + gReadSectorInCluster;
+
+    if (!sdStartMultiRead(startLba)) return false;
+    for (uint8_t b = 0; b < blocksThisRun; b++) {
+      if (!sdReadBlock(dst)) { sdStopMultiRead(); return false; }
+      dst += 512;
+    }
+    sdStopMultiRead();
+
+    gReadSectorInCluster += blocksThisRun;
+    sectorsLeft          -= blocksThisRun;
+    if (gReadSectorInCluster >= gSpc) {
+      gReadSectorInCluster = 0;
+      gReadCluster = fatNextCluster(gReadCluster);
+      if (gReadCluster >= 0x0FFFFFF8U && sectorsLeft > 0) {
+        Serial.println(F("Anim: FAT chain ended early")); return false;
+      }
+    }
+  }
+
+  // Part 3: first 16 bytes of the next sector — cache it for next frame's Part 1.
+  if (!sdReadSector(fatClusterToLba(gReadCluster) + gReadSectorInCluster, gFileSectorBuf))
+    return false;
+  gSectorLoaded     = true;
+  memcpy(dst, gFileSectorBuf, 16U);
+  gReadByteInSector = 16;
+  // gReadSectorInCluster stays: next frame starts at byte 16 of this sector.
+  return true;
+}
+
 static bool parseLsaHeader() {
   uint8_t h[kLsaHeaderSize];
   if (!streamRead(h, sizeof(h))) return false;
@@ -275,6 +359,7 @@ static uint32_t gCurrentFrame    = 0;
 static uint32_t gNextFrameDueMs  = 0;
 static uint32_t gLoopCount       = 0;
 static uint32_t gNextProgressMs  = 0;
+static bool     gDisplayInFlight = false;
 
 bool initSdAndAnimation() {
   gSdReady = gAnimReady = false;
@@ -299,41 +384,81 @@ bool initSdAndAnimation() {
   if (!parseLsaHeader()) return false;
   if (!streamSeekToFirstFrame()) return false;
 
-  gCurrentFrame   = 0;
-  gLoopCount      = 0;
-  gNextFrameDueMs = millis();
-  gNextProgressMs = millis();
-  gAnimReady      = true;
+  gCurrentFrame    = 0;
+  gLoopCount       = 0;
+  gNextFrameDueMs  = millis();
+  gNextProgressMs  = millis();
+  gDisplayInFlight = false;
+  gAnimReady       = true;
   return true;
 }
 
 void updateAnimationPlayback() {
   if (!gAnimReady) return;
-  const uint32_t now = millis();
-  if (static_cast<int32_t>(now - gNextFrameDueMs) < 0) return;
 
+  const uint32_t interval = gAnimFps ? (1000UL / gAnimFps) : 1UL;
+
+  // Loop boundary: finish the in-flight display, seek, then re-bootstrap.
   if (gCurrentFrame >= gAnimFrameCount) {
+    if (gDisplayInFlight) { waitForDisplay(); gDisplayInFlight = false; }
     if (!streamSeekToFirstFrame()) {
       Serial.println(F("Seek failed — reinit SD"));
       gSdReady = gAnimReady = false;
       return;
     }
-    gCurrentFrame   = 0;
-    gNextFrameDueMs = now;
+    gCurrentFrame = 0;
     gLoopCount++;
     Serial.print(F(">>> LOOP #")); Serial.println(gLoopCount);
+    // Fall through to bootstrap below.
   }
 
-  if (!streamRead(gFrameBuffer, kLiveFrameBytes)) {
-    Serial.println(F("Frame read failed — reinit SD"));
-    gSdReady = gAnimReady = false;
+  // Bootstrap: no display is running yet; prime the pipeline.
+  if (!gDisplayInFlight) {
+    if (!streamReadFrame(gFrameBufferBack)) {
+      Serial.println(F("Frame read failed — reinit SD"));
+      gSdReady = gAnimReady = false;
+      return;
+    }
+    uint8_t* tmp = gFrameBuffer; gFrameBuffer = gFrameBufferBack; gFrameBufferBack = tmp;
+    applyCurrentLimit();
+    prepareLaneBuffers();
+    startDisplay();
+    gDisplayInFlight = true;
+    gCurrentFrame++;
+    gNextFrameDueMs = millis() + interval;
     return;
   }
 
+  // Steady-state: read the next frame into the back buffer while the current
+  // DMA display is still running (SPI and PIO/DMA are independent buses).
+  if (!streamReadFrame(gFrameBufferBack)) {
+    Serial.println(F("Frame read failed — reinit SD"));
+    waitForDisplay();
+    gSdReady = gAnimReady = gDisplayInFlight = false;
+    return;
+  }
+
+  // Wait for the previous DMA transfer to finish (~23 ms wall-clock from when
+  // startDisplay() was called; the SD read above consumed ~5 ms of that window).
+  waitForDisplay();
+  gDisplayInFlight = false;
+
+  // Timing gate: hold until the frame is actually due (only active when the
+  // animation FPS is low enough that display finishes before the next deadline).
+  while (static_cast<int32_t>(gNextFrameDueMs - millis()) > 0) {}
+
+  // Swap, convert, and kick off the next display.
+  uint8_t* tmp = gFrameBuffer; gFrameBuffer = gFrameBufferBack; gFrameBufferBack = tmp;
   applyCurrentLimit();
-  renderFrameBuffer();
+  prepareLaneBuffers();
+  startDisplay();
+  gDisplayInFlight = true;
   gCurrentFrame++;
 
+  // Increment (not rebase) so timing drift doesn't accumulate.
+  gNextFrameDueMs += interval;
+
+  const uint32_t now = millis();
   if (static_cast<int32_t>(now - gNextProgressMs) >= 0) {
     const uint32_t pct = gAnimFrameCount ? (gCurrentFrame * 100UL / gAnimFrameCount) : 0;
     Serial.print(F("frame ")); Serial.print(gCurrentFrame);
@@ -342,8 +467,4 @@ void updateAnimationPlayback() {
     Serial.print(F("  loop#")); Serial.println(gLoopCount);
     gNextProgressMs = now + 1000UL;
   }
-
-  uint32_t interval = 1000UL / gAnimFps;
-  if (!interval) interval = 1;
-  gNextFrameDueMs = now + interval;
 }
