@@ -1,3 +1,5 @@
+<img width="1080" height="1080" alt="Untitled" src="https://github.com/user-attachments/assets/ce94318b-53da-47a6-8183-487948ddbfab" />
+
 ![Blender Render](docs/images/RENDER.png)
 ![irl pcb](docs/images/PXL_20260321_124728446.MP.jpg)
 
