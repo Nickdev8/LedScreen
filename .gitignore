@@ -1,6 +1,3 @@
-# For PCBs designed using KiCad: https://www.kicad.org/
-# Format documentation: https://kicad.org/help/file-formats/
-
 # Temporary files
 *.000
 *.bak
@@ -55,15 +52,3 @@ arduino_firmware/*/build/
 .tools/
 pcb/src/.history/
 xlights_project/xLights_dbgrpt-*.zip
-
-# AI / local coding harness metadata
-.omx/
-.omc/
-.claude/
-.openclaude-profile.json
-.pytest_cache/
-.codex
-final_codex_message.md
-AGENTS.md
-CLAUDE.md
-UX_REDESIGN_*.md
