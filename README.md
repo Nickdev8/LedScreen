@@ -76,3 +76,5 @@ Interactive BOM: [cdn.nickesselman.nl](https://cdn.nickesselman.nl/ledpanel/ibom
 ## License
 - Hardware: CERN-OHL-S
 - Firmware/Software: MIT License
+- 
+![irl pcb](docs/images/Zine.png)
