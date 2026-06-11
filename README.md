@@ -26,8 +26,8 @@ If you want to update the code on the MCU, I would really suggest reading [The f
 If you want to update the animations on the display, read [the animation instuctions](docs/ANIMATIONS_INSTUCTIONS.md).
 
 The basic idea is:
-1. Flash the Pico with the firmware from `arduino_firmware/RPI-PICO/`.
-2. Put animation files on the SD card, or stream frames over USB from xLights.
+1. Flash the Pico with the firmware from `arduino_firmware/Main/`.
+2. Put `.lsa` animation files in the SD card root.
 3. Connect the LED panels and power them from an external regulated 5V PSU.
 4. If needed, chain multiple boards together with the sync in/out headers.
 
@@ -36,10 +36,12 @@ The Pico runs my own firmware in the [`arduino_firmware/`](arduino_firmware/) fo
 To Install make sure you have the `Earle Philhower Arduino-Pico core board` library
 
 ### SD Card Playback
-- The Pico firmware looks for animation files in the SD card root and in `/animations`.
-- Supported raw file extensions are `.lsa`, `.seq` and `.gif`.
-- Files are played in alphabetical order. With one file on the card, playback wraps back to that file.
-- USB serial frame streaming still works and temporarily overrides SD playback while data is arriving.
+- The Pico firmware reads root-level `.lsa` files from a FAT32 SD card.
+- Files named `startup*.lsa` play once at boot in case-insensitive alphabetical order.
+- Every other `.lsa` file then plays in case-insensitive alphabetical order, repeating the complete playlist forever.
+- Prefix normal files with numbers such as `01_intro.lsa` and `02_logo.lsa` to control their order.
+- Long filenames such as `startup_1.lsa` are supported.
+- USB live streaming and GIF playback are not part of the active firmware.
 
 ## Project Files
 - [`pcb/src/`](pcb/src/LedScreen.kicad_sch) - PCB sourse

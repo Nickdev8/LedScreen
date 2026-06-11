@@ -129,10 +129,14 @@ uint32_t fatClusterToLba(uint32_t cluster) {
 }
 
 static uint8_t gFatSectorBuf[512];
+static bool    gFatReadFailed = false;
 
 uint32_t fatNextCluster(uint32_t cluster) {
   const uint32_t fatSector = gFatLba + cluster / 128U;
-  if (!sdReadSector(fatSector, gFatSectorBuf)) return 0x0FFFFFFF;
+  if (!sdReadSector(fatSector, gFatSectorBuf)) {
+    gFatReadFailed = true;
+    return 0x0FFFFFFF;
+  }
   const uint32_t off  = (cluster % 128U) * 4U;
   const uint32_t next = static_cast<uint32_t>(gFatSectorBuf[off])
                       | (static_cast<uint32_t>(gFatSectorBuf[off+1]) << 8)
@@ -141,7 +145,7 @@ uint32_t fatNextCluster(uint32_t cluster) {
   return next & 0x0FFFFFFFUL;
 }
 
-bool fatMount(uint32_t& outFirstCluster, uint32_t& outFileSize) {
+bool fatMount() {
   uint8_t buf[512];
 
   if (!sdReadSector(0, buf)) return false;
@@ -171,11 +175,150 @@ bool fatMount(uint32_t& outFirstCluster, uint32_t& outFileSize) {
   gFatLba  = partLba + reservedSecs;
   gDataLba = gFatLba + static_cast<uint32_t>(numFats) * secsPerFat;
 
-  return fatFindFile("LSA", outFirstCluster, outFileSize);
+  return true;
 }
 
-bool fatFindFile(const char ext[3], uint32_t& outCluster, uint32_t& outFileSize) {
+constexpr uint8_t  kMaxAnimationFiles = 128;
+constexpr uint16_t kMaxFilenameBytes  = 261;
+
+struct AnimationFile {
+  char     name[kMaxFilenameBytes];
+  uint32_t firstCluster;
+  uint32_t fileSize;
+  bool     startup;
+  bool     enabled;
+};
+
+static AnimationFile gAnimationFiles[kMaxAnimationFiles];
+static uint8_t       gAnimationFileCount = 0;
+
+static char    gLongName[kMaxFilenameBytes];
+static bool    gLongNameValid    = false;
+static uint8_t gLongNameChecksum = 0;
+
+static char asciiLower(char c) {
+  return (c >= 'A' && c <= 'Z') ? static_cast<char>(c + ('a' - 'A')) : c;
+}
+
+static int compareNamesIgnoreCase(const char* a, const char* b) {
+  while (*a && *b) {
+    const char ca = asciiLower(*a);
+    const char cb = asciiLower(*b);
+    if (ca != cb) return static_cast<uint8_t>(ca) - static_cast<uint8_t>(cb);
+    ++a;
+    ++b;
+  }
+  return static_cast<uint8_t>(*a) - static_cast<uint8_t>(*b);
+}
+
+static bool startsWithIgnoreCase(const char* text, const char* prefix) {
+  while (*prefix) {
+    if (!*text || asciiLower(*text) != asciiLower(*prefix)) return false;
+    ++text;
+    ++prefix;
+  }
+  return true;
+}
+
+static bool endsWithIgnoreCase(const char* text, const char* suffix) {
+  const size_t textLen   = strlen(text);
+  const size_t suffixLen = strlen(suffix);
+  if (textLen < suffixLen) return false;
+  return compareNamesIgnoreCase(text + textLen - suffixLen, suffix) == 0;
+}
+
+static uint8_t fatShortNameChecksum(const uint8_t* shortName) {
+  uint8_t sum = 0;
+  for (uint8_t i = 0; i < 11; i++)
+    sum = static_cast<uint8_t>(((sum & 1U) ? 0x80U : 0U) + (sum >> 1) + shortName[i]);
+  return sum;
+}
+
+static void resetLongName() {
+  memset(gLongName, 0, sizeof(gLongName));
+  gLongNameValid = false;
+  gLongNameChecksum = 0;
+}
+
+static void readLongNameEntry(const uint8_t* entry) {
+  const uint8_t sequence = entry[0] & 0x1FU;
+  if (entry[0] & 0x40U) {
+    resetLongName();
+    gLongNameValid = true;
+    gLongNameChecksum = entry[13];
+  }
+  if (!gLongNameValid || sequence == 0) {
+    resetLongName();
+    return;
+  }
+
+  static const uint8_t kCharOffsets[13] = {
+    1, 3, 5, 7, 9, 14, 16, 18, 20, 22, 24, 28, 30
+  };
+  const uint16_t base = static_cast<uint16_t>(sequence - 1U) * 13U;
+  if (base >= kMaxFilenameBytes) {
+    resetLongName();
+    return;
+  }
+
+  for (uint8_t i = 0; i < 13; i++) {
+    const uint16_t pos = base + i;
+    if (pos >= kMaxFilenameBytes) {
+      resetLongName();
+      return;
+    }
+    const uint8_t offset = kCharOffsets[i];
+    const uint16_t code = static_cast<uint16_t>(entry[offset])
+                        | (static_cast<uint16_t>(entry[offset + 1]) << 8);
+    if (code == 0x0000U) {
+      gLongName[pos] = '\0';
+      break;
+    }
+    if (code == 0xFFFFU) continue;
+    gLongName[pos] = (code >= 0x20U && code <= 0x7EU) ? static_cast<char>(code) : '?';
+  }
+}
+
+static void formatShortName(const uint8_t* entry, char* out) {
+  uint8_t pos = 0;
+  for (uint8_t i = 0; i < 8 && entry[i] != ' '; i++)
+    out[pos++] = static_cast<char>(entry[i]);
+  if (entry[8] != ' ') {
+    out[pos++] = '.';
+    for (uint8_t i = 8; i < 11 && entry[i] != ' '; i++)
+      out[pos++] = static_cast<char>(entry[i]);
+  }
+  out[pos] = '\0';
+}
+
+static void addAnimationFile(const char* name, const uint8_t* entry) {
+  if (!endsWithIgnoreCase(name, ".lsa")) return;
+  if (gAnimationFileCount >= kMaxAnimationFiles) {
+    Serial.println(F("Playlist: file limit reached; remaining .lsa files ignored"));
+    return;
+  }
+
+  AnimationFile& file = gAnimationFiles[gAnimationFileCount++];
+  strncpy(file.name, name, sizeof(file.name) - 1U);
+  file.name[sizeof(file.name) - 1U] = '\0';
+  const uint32_t hi = static_cast<uint32_t>(entry[20])
+                    | (static_cast<uint32_t>(entry[21]) << 8);
+  const uint32_t lo = static_cast<uint32_t>(entry[26])
+                    | (static_cast<uint32_t>(entry[27]) << 8);
+  file.firstCluster = (hi << 16) | lo;
+  file.fileSize = static_cast<uint32_t>(entry[28])
+                | (static_cast<uint32_t>(entry[29]) << 8)
+                | (static_cast<uint32_t>(entry[30]) << 16)
+                | (static_cast<uint32_t>(entry[31]) << 24);
+  file.startup = startsWithIgnoreCase(file.name, "startup");
+  file.enabled = true;
+}
+
+static bool scanRootAnimations() {
   uint8_t buf[512];
+  gAnimationFileCount = 0;
+  resetLongName();
+
   uint32_t dirCluster = gRootCluster;
   while (dirCluster < 0x0FFFFFF8U) {
     const uint32_t lba = fatClusterToLba(dirCluster);
@@ -183,31 +326,52 @@ bool fatFindFile(const char ext[3], uint32_t& outCluster, uint32_t& outFileSize)
       if (!sdReadSector(lba + s, buf)) return false;
       for (uint8_t e = 0; e < 16; e++) {
         uint8_t* en = buf + static_cast<uint16_t>(e) * 32;
-        if (en[0] == 0x00) return false;
-        if (en[0] == 0xE5) continue;
-        if (en[11] == 0x0F) continue;
-        if (en[11] & 0x18) continue;
-        if (en[8] == (uint8_t)ext[0] && en[9] == (uint8_t)ext[1] && en[10] == (uint8_t)ext[2]) {
-          const uint32_t hi = static_cast<uint32_t>(en[20]) | (static_cast<uint32_t>(en[21]) << 8);
-          const uint32_t lo = static_cast<uint32_t>(en[26]) | (static_cast<uint32_t>(en[27]) << 8);
-          outCluster  = (hi << 16) | lo;
-          outFileSize = static_cast<uint32_t>(en[28])
-                      | (static_cast<uint32_t>(en[29]) << 8)
-                      | (static_cast<uint32_t>(en[30]) << 16)
-                      | (static_cast<uint32_t>(en[31]) << 24);
-          return true;
+        if (en[0] == 0x00) {
+          dirCluster = 0x0FFFFFFFU;
+          break;
         }
+        if (en[0] == 0xE5) {
+          resetLongName();
+          continue;
+        }
+        if (en[11] == 0x0F) {
+          readLongNameEntry(en);
+          continue;
+        }
+
+        if (!(en[11] & 0x18U)) {
+          char shortName[13];
+          formatShortName(en, shortName);
+          const bool useLongName = gLongNameValid
+                                && gLongName[0] != '\0'
+                                && gLongNameChecksum == fatShortNameChecksum(en);
+          addAnimationFile(useLongName ? gLongName : shortName, en);
+        }
+        resetLongName();
       }
+      if (dirCluster >= 0x0FFFFFF8U) break;
     }
+    if (dirCluster >= 0x0FFFFFF8U) break;
     dirCluster = fatNextCluster(dirCluster);
   }
-  return false;
+
+  for (uint8_t i = 1; i < gAnimationFileCount; i++) {
+    AnimationFile key = gAnimationFiles[i];
+    uint8_t j = i;
+    while (j > 0 && compareNamesIgnoreCase(key.name, gAnimationFiles[j - 1].name) < 0) {
+      gAnimationFiles[j] = gAnimationFiles[j - 1];
+      --j;
+    }
+    gAnimationFiles[j] = key;
+  }
+  return !gFatReadFailed;
 }
 
 constexpr size_t kLsaHeaderSize = 16;
 constexpr char   kLsaMagic[4]   = { 'L', 'S', 'A', '1' };
 
 static uint32_t gAnimFirstCluster = 0;
+static uint32_t gAnimFileSize     = 0;
 static uint32_t gAnimDataOffset   = 0;
 static uint32_t gAnimFrameCount   = 0;
 static uint16_t gAnimFps          = 0;
@@ -217,6 +381,12 @@ static uint8_t  gReadSectorInCluster = 0;
 static uint16_t gReadByteInSector    = 0;
 static uint8_t  gFileSectorBuf[512];
 static bool     gSectorLoaded        = false;
+
+static bool streamReadSector(uint32_t lba, uint8_t* dst) {
+  if (sdReadSector(lba, dst)) return true;
+  gFatReadFailed = true;
+  return false;
+}
 
 static bool streamAdvanceSector() {
   gReadByteInSector = 0;
@@ -237,7 +407,7 @@ static bool streamRead(uint8_t* dst, size_t len) {
   while (len > 0) {
     if (!gSectorLoaded) {
       const uint32_t lba = fatClusterToLba(gReadCluster) + gReadSectorInCluster;
-      if (!sdReadSector(lba, gFileSectorBuf)) return false;
+      if (!streamReadSector(lba, gFileSectorBuf)) return false;
       gSectorLoaded = true;
     }
     const uint16_t avail = 512U - gReadByteInSector;
@@ -261,7 +431,7 @@ static bool streamSeekToFirstFrame() {
   uint32_t skip = gAnimDataOffset;
   while (skip > 0) {
     if (!gSectorLoaded) {
-      if (!sdReadSector(fatClusterToLba(gReadCluster) + gReadSectorInCluster, gFileSectorBuf))
+      if (!streamReadSector(fatClusterToLba(gReadCluster) + gReadSectorInCluster, gFileSectorBuf))
         return false;
       gSectorLoaded = true;
     }
@@ -280,10 +450,12 @@ static bool streamSeekToFirstFrame() {
 // Each frame starts at gReadByteInSector==16 within its first sector (16-byte LSA header offset).
 // After the call, gReadByteInSector==16 and gSectorLoaded==true for the next frame.
 static bool streamReadFrame(uint8_t* dst) {
+  static_assert(kLiveFrameBytes == 15360, "Optimized SD frame reader assumes 15360-byte frames");
+
   // Part 1: 496-byte tail of the current sector.
   // After streamSeekToFirstFrame (or a previous streamReadFrame), gSectorLoaded is always true.
   if (!gSectorLoaded) {
-    if (!sdReadSector(fatClusterToLba(gReadCluster) + gReadSectorInCluster, gFileSectorBuf))
+    if (!streamReadSector(fatClusterToLba(gReadCluster) + gReadSectorInCluster, gFileSectorBuf))
       return false;
     gSectorLoaded = true;
   }
@@ -306,9 +478,16 @@ static bool streamReadFrame(uint8_t* dst) {
     const uint8_t blocksThisRun = inCluster < sectorsLeft ? inCluster : sectorsLeft;
     const uint32_t startLba    = fatClusterToLba(gReadCluster) + gReadSectorInCluster;
 
-    if (!sdStartMultiRead(startLba)) return false;
+    if (!sdStartMultiRead(startLba)) {
+      gFatReadFailed = true;
+      return false;
+    }
     for (uint8_t b = 0; b < blocksThisRun; b++) {
-      if (!sdReadBlock(dst)) { sdStopMultiRead(); return false; }
+      if (!sdReadBlock(dst)) {
+        gFatReadFailed = true;
+        sdStopMultiRead();
+        return false;
+      }
       dst += 512;
     }
     sdStopMultiRead();
@@ -325,7 +504,7 @@ static bool streamReadFrame(uint8_t* dst) {
   }
 
   // Part 3: first 16 bytes of the next sector — cache it for next frame's Part 1.
-  if (!sdReadSector(fatClusterToLba(gReadCluster) + gReadSectorInCluster, gFileSectorBuf))
+  if (!streamReadSector(fatClusterToLba(gReadCluster) + gReadSectorInCluster, gFileSectorBuf))
     return false;
   gSectorLoaded     = true;
   memcpy(dst, gFileSectorBuf, 16U);
@@ -349,11 +528,16 @@ static bool parseLsaHeader() {
   if (ledCount != kLiveLedCount || fps == 0 || frames == 0) {
     Serial.println(F("LSA: header mismatch")); return false;
   }
+  const uint64_t expectedSize = static_cast<uint64_t>(kLsaHeaderSize)
+                              + static_cast<uint64_t>(frames) * kLiveFrameBytes;
+  if (expectedSize > gAnimFileSize) {
+    Serial.println(F("LSA: file is truncated")); return false;
+  }
   gAnimFps        = fps;
   gAnimFrameCount = frames;
   gAnimDataOffset = kLsaHeaderSize;
   Serial.print(F("LSA: ")); Serial.print(frames);
-  Serial.print(F(" frames @ ")); Serial.print(fps); Serial.println(F(" fps (looping)"));
+  Serial.print(F(" frames @ ")); Serial.print(fps); Serial.println(F(" fps"));
   return true;
 }
 
@@ -363,12 +547,104 @@ uint32_t gNextSdRetryMs = 0;
 
 static uint32_t gCurrentFrame    = 0;
 static uint32_t gNextFrameDueMs  = 0;
-static uint32_t gLoopCount       = 0;
 static uint32_t gNextProgressMs  = 0;
 static bool     gDisplayInFlight = false;
 
-bool initSdAndAnimation() {
+enum class PlaylistPhase : uint8_t {
+  Startup,
+  Regular,
+  Done,
+};
+
+static PlaylistPhase gPlaylistPhase = PlaylistPhase::Done;
+static int16_t       gCurrentFileIndex = -1;
+
+static bool openAnimation(uint8_t index) {
+  AnimationFile& file = gAnimationFiles[index];
+  gAnimFirstCluster = file.firstCluster;
+  gAnimFileSize     = file.fileSize;
+  gFatReadFailed    = false;
+
+  gReadCluster = gAnimFirstCluster;
+  gReadSectorInCluster = 0;
+  gReadByteInSector = 0;
+  gSectorLoaded = false;
+  if (!parseLsaHeader() || !streamSeekToFirstFrame()) {
+    if (gFatReadFailed) {
+      Serial.println(F("Playlist: SD read failed"));
+      gSdReady = false;
+      gPlaylistPhase = PlaylistPhase::Done;
+      return false;
+    }
+    Serial.print(F("Playlist: skipping invalid file ")); Serial.println(file.name);
+    file.enabled = false;
+    return false;
+  }
+
+  Serial.print(file.startup ? F("Startup: ") : F("Playlist: "));
+  Serial.println(file.name);
+  gCurrentFileIndex = index;
+  gCurrentFrame     = 0;
+  gNextFrameDueMs   = millis();
+  gNextProgressMs   = millis();
+  gAnimReady        = true;
+  return true;
+}
+
+static int16_t findNextFile(bool startup, int16_t afterIndex, bool wrap) {
+  if (gAnimationFileCount == 0) return -1;
+  const uint8_t attempts = wrap ? gAnimationFileCount : static_cast<uint8_t>(
+    gAnimationFileCount - (afterIndex + 1)
+  );
+  for (uint8_t step = 1; step <= attempts; step++) {
+    const int16_t rawIndex = afterIndex + step;
+    const uint8_t index = wrap
+      ? static_cast<uint8_t>(rawIndex % gAnimationFileCount)
+      : static_cast<uint8_t>(rawIndex);
+    const AnimationFile& file = gAnimationFiles[index];
+    if (file.enabled && file.startup == startup) return index;
+  }
+  return -1;
+}
+
+static bool startNextAnimation() {
+  const uint16_t maxAttempts = static_cast<uint16_t>(gAnimationFileCount) * 2U + 2U;
+  for (uint16_t attempts = 0; attempts < maxAttempts; attempts++) {
+    int16_t next = -1;
+    if (gPlaylistPhase == PlaylistPhase::Startup) {
+      next = findNextFile(true, gCurrentFileIndex, false);
+      if (next < 0) {
+        gPlaylistPhase = PlaylistPhase::Regular;
+        gCurrentFileIndex = -1;
+        continue;
+      }
+    } else if (gPlaylistPhase == PlaylistPhase::Regular) {
+      next = findNextFile(false, gCurrentFileIndex, true);
+      if (next < 0) break;
+    } else {
+      break;
+    }
+
+    if (openAnimation(static_cast<uint8_t>(next))) return true;
+    if (!gSdReady) {
+      gAnimReady = false;
+      return false;
+    }
+    gCurrentFileIndex = next;
+  }
+
+  gPlaylistPhase = PlaylistPhase::Done;
+  gAnimReady = false;
+  Serial.println(F("Playlist: no playable regular animations"));
+  return false;
+}
+
+bool initSdPlaylist() {
   gSdReady = gAnimReady = false;
+  gDisplayInFlight = false;
+  gCurrentFileIndex = -1;
+  gPlaylistPhase = PlaylistPhase::Startup;
+  gFatReadFailed = false;
 
   Serial.println(F("--- SD init ---"));
   if (!sdInit()) { Serial.println(F("SD init FAIL")); return false; }
@@ -376,27 +652,21 @@ bool initSdAndAnimation() {
   gSdReady = true;
 
   Serial.println(F("--- FAT mount ---"));
-  uint32_t fileSize = 0;
-  if (!fatMount(gAnimFirstCluster, fileSize)) {
-    Serial.println(F("No .lsa file found on SD root")); return false;
+  if (!fatMount()) {
+    Serial.println(F("FAT mount FAIL"));
+    gSdReady = false;
+    return false;
   }
-  Serial.print(F("Found .lsa  cluster=")); Serial.print(gAnimFirstCluster);
-  Serial.print(F("  size=")); Serial.println(fileSize);
+  if (!scanRootAnimations()) {
+    Serial.println(F("Playlist: root scan failed"));
+    gSdReady = false;
+    return false;
+  }
 
-  gReadCluster = gAnimFirstCluster;
-  gReadSectorInCluster = 0;
-  gReadByteInSector = 0;
-  gSectorLoaded = false;
-  if (!parseLsaHeader()) return false;
-  if (!streamSeekToFirstFrame()) return false;
-
-  gCurrentFrame    = 0;
-  gLoopCount       = 0;
-  gNextFrameDueMs  = millis();
-  gNextProgressMs  = millis();
-  gDisplayInFlight = false;
-  gAnimReady       = true;
-  return true;
+  Serial.print(F("Playlist: found ")); Serial.print(gAnimationFileCount);
+  Serial.println(F(" root-level .lsa file(s)"));
+  startNextAnimation();
+  return gAnimReady;
 }
 
 void updateAnimationPlayback() {
@@ -404,18 +674,10 @@ void updateAnimationPlayback() {
 
   const uint32_t interval = gAnimFps ? (1000UL / gAnimFps) : 1UL;
 
-  // Loop boundary: finish the in-flight display, seek, then re-bootstrap.
+  // File boundary: finish the final display before opening the next animation.
   if (gCurrentFrame >= gAnimFrameCount) {
     if (gDisplayInFlight) { waitForDisplay(); gDisplayInFlight = false; }
-    if (!streamSeekToFirstFrame()) {
-      Serial.println(F("Seek failed — reinit SD"));
-      gSdReady = gAnimReady = false;
-      return;
-    }
-    gCurrentFrame = 0;
-    gLoopCount++;
-    Serial.print(F(">>> LOOP #")); Serial.println(gLoopCount);
-    // Fall through to bootstrap below.
+    if (!startNextAnimation()) return;
   }
 
   // Bootstrap: no display is running yet; prime the pipeline.
@@ -469,8 +731,7 @@ void updateAnimationPlayback() {
     const uint32_t pct = gAnimFrameCount ? (gCurrentFrame * 100UL / gAnimFrameCount) : 0;
     Serial.print(F("frame ")); Serial.print(gCurrentFrame);
     Serial.print(F("/")); Serial.print(gAnimFrameCount);
-    Serial.print(F("  ")); Serial.print(pct); Serial.print(F("%"));
-    Serial.print(F("  loop#")); Serial.println(gLoopCount);
+    Serial.print(F("  ")); Serial.print(pct); Serial.println(F("%"));
     gNextProgressMs = now + 1000UL;
   }
 }

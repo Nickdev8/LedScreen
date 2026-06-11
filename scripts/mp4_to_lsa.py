@@ -120,7 +120,7 @@ def write_lsa(input_path: str, output_path: str, fps: int) -> None:
 
     size_mb = (16 + frames_written * FRAME_BYTES) / 1_048_576
     print(f"Wrote: {output_path}")
-    print(f"  {frames_written} frames  |  {fps} fps  |  {size_mb:.1f} MB  |  loops forever")
+    print(f"  {frames_written} frames  |  {fps} fps  |  {size_mb:.1f} MB  |  playlist ready")
 
 
 def main():
