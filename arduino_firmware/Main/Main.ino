@@ -1,16 +1,9 @@
 #include "Config.h"
 #include "Leds.h"
 #include "Sd.h"
-#include "Gif.h"
-#include "UsbStream.h"
 
 static void tryInitPlayback() {
-  initSdAndAnimation();
-  if (!gAnimReady && gSdReady) {
-    uint32_t gifCluster, gifSize;
-    if (fatFindFile("GIF", gifCluster, gifSize))
-      initGifPlayback(gifCluster, gifSize);
-  }
+  initSdPlaylist();
 }
 
 void setup() {
@@ -22,28 +15,19 @@ void setup() {
 }
 
 void loop() {
-  // Live USB traffic owns the LEDs until it goes idle.
-  serviceUsbStream();
-  if (usbStreamActive()) {
-    gIdleBlinkActive = false;
-    return;
-  }
-
-  const bool playing = gAnimReady || gGifReady;
-
-  if (!gSdReady || !playing) {
+  if (!gSdReady) {
     if (millis() >= gNextSdRetryMs) {
       gNextSdRetryMs = millis() + kSdRetryIntervalMs;
       tryInitPlayback();
     }
-    if (!playing) {
-      if (!gIdleBlinkActive) resetIdleBlink();
-      updateIdleBlink();
-    }
+  }
+
+  if (gAnimReady) {
+    gIdleBlinkActive = false;
+    updateAnimationPlayback();
     return;
   }
 
-  gIdleBlinkActive = false;
-  if (gAnimReady) updateAnimationPlayback();
-  else            updateGifPlayback();
+  if (!gIdleBlinkActive) resetIdleBlink();
+  updateIdleBlink();
 }

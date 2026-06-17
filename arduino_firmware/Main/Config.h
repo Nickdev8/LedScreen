@@ -57,8 +57,7 @@ constexpr uint8_t kSdMosi = 19;
 constexpr uint8_t kSdMiso = 20;
 constexpr uint8_t kSdSck  = 18;
 
-constexpr uint32_t kLiveSerialBaud     = 500000UL;
-constexpr uint32_t kLiveFrameTimeoutMs = 50UL;
+constexpr uint32_t kLiveSerialBaud = 115200UL;
 
 constexpr uint32_t kSdRetryIntervalMs = 3000;
 constexpr uint32_t kSdReadSpeedHz     = 25000000UL;

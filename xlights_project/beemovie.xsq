@@ -10,11 +10,11 @@
     <album></album>
     <MusicURL></MusicURL>
     <comment></comment>
-    <sequenceTiming>25 ms</sequenceTiming>
+    <sequenceTiming>10 ms</sequenceTiming>
     <sequenceType>Animation</sequenceType>
     <mediaFile></mediaFile>
-    <sequenceDuration>30.000</sequenceDuration>
-    <imageDir></imageDir>
+    <sequenceDuration>100.000</sequenceDuration>
+    <imageDir/>
   </head>
   <nextid>1</nextid>
   <Jukebox/>
@@ -39,7 +39,7 @@
     <Element type="model" name="pico">
       <EffectLayer>
         <Effect ref="0" name="On" startTime="0" endTime="900" palette="0"/>
-        <Effect ref="1" name="Video" selected="1" id="1" startTime="900" endTime="30050" palette="0"/>
+        <Effect ref="1" name="Video" selected="1" id="1" startTime="900" endTime="48900" palette="0"/>
       </EffectLayer>
     </Element>
   </ElementEffects>
