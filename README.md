@@ -80,3 +80,15 @@ Interactive BOM: [cdn.nickesselman.nl](https://cdn.nickesselman.nl/ledpanel/ibom
 - Firmware/Software: MIT License
 - 
 ![irl pcb](docs/images/zine.png)
+
+
+# Daft Punk Helmets
+I used this project for 2 Helmets, Guy manual (gold) & Thomas (Silver)
+all 3d printed in about 200h of print time. and LED strips on the inside for the classic robot screen.
+Models are in the repo and how i made this you can google and find on instrucables
+
+![irl pcb](docs/images/daftpunk1.png)
+![irl pcb](docs/images/daftpunk2.png)
+![irl pcb](docs/images/daftpunk3.png)
+![irl pcb](docs/images/daftpunk4.png)
+![irl pcb](docs/images/daftpunk5.png)
