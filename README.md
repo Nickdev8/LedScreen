@@ -89,6 +89,6 @@ Models are in the repo and how i made this you can google and find on instrucabl
 
 ![irl pcb](docs/images/daftpunk1.png)
 ![irl pcb](docs/images/daftpunk2.png)
-![irl pcb](docs/images/daftpunk3.png)
-![irl pcb](docs/images/daftpunk4.png)
-![irl pcb](docs/images/daftpunk5.png)
+![irl pcb](docs/images/daftpunk3.jpg)
+![irl pcb](docs/images/daftpunk4.jpg)
+![irl pcb](docs/images/daftpunk5.jpg)
