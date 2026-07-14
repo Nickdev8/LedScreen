@@ -1,9 +1,7 @@
-<img width="1024" height="576" alt="image" src="https://github.com/user-attachments/assets/e1c25efb-332d-4675-a422-a1f9329d9408" />
-<img width="1600" height="900" alt="image" src="https://github.com/user-attachments/assets/a071630f-89eb-45cd-9913-195cfb7dce94" />
-
-![Blender Render](docs/images/RENDER.png)
-![irl pcb](docs/images/PXL_20260321_124728446.MP.jpg)
-
+<p>
+  <img src="docs/images/RENDER.png" alt="jlcpcb orders" width="40%">
+  <img src="docs/images/PXL_20260321_124728446.MP.jpg" alt="jlcpcb orders" width="40%">
+</p>
 # Led Control Board
 Status: PCB, Firmware, Hardware and examples are Completly done!
 
